@@ -23,6 +23,8 @@ CREATE TABLE user_auth (
     auth        VARCHAR(100) NOT NULL
 );
 
+select * from user_auth;
+
 -- COMMENT 추가
 COMMENT ON TABLE users IS '회원';
 COMMENT ON COLUMN users.no IS 'PK';
