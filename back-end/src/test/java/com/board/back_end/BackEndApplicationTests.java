@@ -1,10 +1,10 @@
-package com.toy.BE;
+package com.board.back_end;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class BeApplicationTests {
+class BackEndApplicationTests {
 
 	@Test
 	void contextLoads() {
