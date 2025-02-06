@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.toy.backend.board.mapper.UserMapper">
+    <!-- resultMap은 SQL 결과를 Java 객체에 매핑해주는 역할을 한다.
+        property는 Java 객체의 필드를, column은 DB 컬럼명을 지정하여
+        데이터 변환을 자동화 할 수 있다.
+    -->
+
+    <!-- 트러블 슈팅!
+
+        <resultMap type="com.toy.backend.board.domain.Users" id="userMap">
+          type을 풀패지명으로 명확히 명시하면 매퍼가 연결되는데 명시하지 않았을때는 연결이 불가능 했다.
+          뭔가 이상하다 싶어 전체적인 프로젝트 구조를 점검하며 살펴 보다가 찾아낸 원인은 application.properties에
+          패키지 주소를 잘못 명시하여 설정했기 때문에 매퍼 스캔이 불가능했던 뮨제 해결
+
+          tip: 혹여나 도메인의 vo를 못가져오면 위와 같이 연결하는 방법도 적용해볼것
+      -->
+
+    <resultMap type="Users" id="userMap">
+        <id property="no" column="no"/>
+
+        <result property="no" column="no"/>
+        <result property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="password" column="password"/>
+        <result property="name" column="name"/>
+        <result property="email" column="email"/>
+        <result property="enabled" column="enabled"/>
+        <result property="createdAt" column="createdAt"/>
+        <result property="updatedAt" column="updatedAt"/>
+
+        <!-- 1:N (일대다) 관계 매핑
+            property: 현재 resultMap의 객체안에 매핑할 변수명
+            select: 1:N 관계의 서브쿼리 ID
+            column: 서브쿼리에 넘길 값의 컬럼명
+            ofType: 서브쿼리로 조회된 데이터를 매핑할 객체 타입
+        -->
+
+        <!--  <collection> 태그는 1:N 관계 데이터를 매핑할 때 사용 한다.
+            property="authList" → User 객체의 필드
+            select="authList" → UserAuth를 가져오는 SQL 실행
+            column="username" → 조회 기준 (사용자 username)
+            ofType="UserAuth" → 리스트에 매핑할 데이터 타입
+
+            이제 사용자 조회 시 자동으로 권한 리스트도 포함되어
+            따로 추가 쿼리를 실행할 필요가 없음!
+        -->
+        <collection property="authList" select="authList" column="username" ofType="UserAuth"></collection>
+    </resultMap>
+
+    <!-- <resultMap type="com.toy.back_end.board.domain.UserAuth" id="authMap"> -->
+    <resultMap type="UserAuth" id="authMap">
+        <result property="no" column="no"/>
+        <result property="username" column="username"/>
+        <result property="auth" column="auth"/>
+    </resultMap>
+
+    <!-- 회원 조회 - id -->
+    <select id="select" resultMap="userMap">
+        SELECT *
+        FROM users
+        WHERE username = #{username}
+    </select>
+
+    <!-- 회원 권한 -->
+    <select id="authList" resultMap="authMap">
+        SELECT *
+        FROM user_auth
+        WHERE username = #{username}
+    </select>
+
+    <!-- 회원 가입 -->
+    <insert id="join">
+        INSERT INTO users ( id, username, password, name, email )
+        VALUES ( #{id}, #{username}, #{password}, #{name}, #{email} )
+    </insert>
+
+    <!-- 회원 정보 수정 -->
+    <update id="update">
+        UPDATE users
+        SET password = #{password}
+        ,name = #{name}
+        ,email = #{email}
+        ,updated_at = now()
+        WHERE username = #{username}
+    </update>
+
+    <!-- 회원 권한 등록 -->
+    <insert id="insertAuth">
+        INSERT INTO user_auth ( username, auth )
+        VALUES ( #{username}, #{auth} )
+    </insert>
+
+    <!-- 회원 삭제 -->
+    <delete id="delete">
+        DELETE FROM users
+        WHERE username = #{username}
+    </delete>
+
+</mapper>
