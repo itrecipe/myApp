@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @ToString
 public class CustomUser implements UserDetails {
 
-    // 사용자의 DTO
+    // 사용자 DTO
     private Users user;
 
     public CustomUser(Users user) {
@@ -28,7 +28,7 @@ public class CustomUser implements UserDetails {
       */
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthoritiess() {
+    public Collection<? extends GrantedAuthority> getAuthorities() {
         return user.getAuthList().stream()
                                 .map( (auth) -> new SimpleGrantedAuthority(auth.getAuth()) )
                                 .collect(Collectors.toList());
@@ -48,10 +48,18 @@ public class CustomUser implements UserDetails {
     public boolean isAccountNonExpired() {
         return true;
     }
-
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
 
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return user.getEnabled();
+    }
 }
