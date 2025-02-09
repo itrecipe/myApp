@@ -23,7 +23,7 @@ public class CustomUser implements UserDetails {
      /*
          권한 정보 메소드
          UserDetails 를 CustomUser 로 구현하여,
-         Spring Security 의 User 대신 사용자 정의 인증 객체(CustomUser)로
+         SpringSecurity 의 User 대신 사용자 정의 인증 객체(CustomUser)로
          적용 예정 CustomUser 적용 시, 권한을 사용할 때는 'ROLE_' 붙여서 사용 해야 한다.
       */
 

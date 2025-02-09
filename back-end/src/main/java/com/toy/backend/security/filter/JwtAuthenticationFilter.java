@@ -1,7 +1,11 @@
 package com.toy.backend.security.filter;
 
+import com.toy.backend.domain.CustomUser;
+import com.toy.backend.domain.Users;
 import com.toy.backend.security.constants.SecurityConstants;
 import com.toy.backend.security.provider.JwtProvider;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -9,7 +13,12 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -62,11 +71,35 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     /*
        인증 성공 메소드
-      : attemptAuthentication() 호출 후, 반환된 Authentication 객체가 인증된 것이 확인 되면 호출되는 메소드
+      : attemptAuthentication() 호출 후,
+      반환된 Authentication 객체가 인증된 것이 확인 되면 호출되는 메소드
 
        JWT
-      : 로그인 인증에 성공, JWT 토큰 생성
+      : 로그인 인증에 성공, JWT 토큰 생성 (발행)
          Authorizaion 응답헤더에 jwt 토큰을 담아 응답
         { Authorizaion : Bearer + {jwt} }
     */
+    @Override
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
+
+        log.info("인증 성공!");
+
+        // 해당 메소드로부터 로그인 된 정보를 CustomUser로 가져올 수 있다.
+        CustomUser customUser = (CustomUser) authentication.getPrincipal();
+        Users user = customUser.getUser(); // 유저 정보를 하나 꺼내 놓기
+        String id = user.getId();
+        String username = user.getUsername();
+        List<String> roles = user.getAuthList()
+                                .stream() // 스트림으로 돌려주고
+                                .map( GrantedAuthority::getAuthority ) // 맵으로 권한을 꺼내오기
+                                .collect(Collectors.toList() )
+                                ;
+
+        // JWT 생성
+        String jwt = jwtProvider.createToken(id, username, roles);
+
+        // Authorization 응답 헤더 세팅
+        response.addHeader("Authorization", SecurityConstants.TOKEN_PREFIX + jwt);
+        response.setStatus(200);
+    }
 }

@@ -1,13 +1,18 @@
 package com.toy.backend.config;
 
+import com.toy.backend.security.filter.JwtAuthenticationFilter;
+import com.toy.backend.security.provider.JwtProvider;
 import com.toy.backend.service.UserDetailServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 // TODO : deprecated 없애기 (version : before SpringSecurity 5.4 ⬇)
 // @EnableWebSecurity
@@ -54,6 +59,26 @@ public class SecurityConfig {
     @Autowired
     private UserDetailServiceImpl userDetailServiceImpl;
 
+    @Autowired
+    private JwtProvider jwtProvider;
+
+    /* 아래 구조로 AuthenticationManager Bean을 등록 한다.
+       private AuthenticationManager authenticationManager;
+
+        @Bean
+        public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+            this.authenticationManager = authenticationConfiguration.getAuthenticationManager();
+            return authenticationManager;
+    }
+    */
+    private AuthenticationManager authenticationManager;
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        this.authenticationManager = authenticationConfiguration.getAuthenticationManager();
+        return authenticationManager;
+    }
+
     // OK : (version : after SpringSecurity 5.4 ⬆)
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -80,6 +105,13 @@ public class SecurityConfig {
         // 사용자 정의 인증 설정
         http.userDetailsService(userDetailServiceImpl); // 상단에 의존성 주입을 해둬야 설정이 가능하다. (기억할것!)
 
+        /* 필터 설정
+           - JWT 인증 필터를 설정하는 작업
+        */
+        http.addFilterAt( new JwtAuthenticationFilter(authenticationManager, jwtProvider),
+                            UsernamePasswordAuthenticationFilter.class );
+
+
         // 구성이 완료된 SecurityFilterChain을 반환합니다.
         return http.build();
     }
@@ -104,4 +136,3 @@ public class SecurityConfig {
          }
      */
 }
-
