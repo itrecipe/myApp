@@ -72,7 +72,6 @@ public class JwtProvider {
                             .claim("rol", roles)                                      // rol : 회원 권한 목록
                             .compact();
         */
-
         log.info("jwt : " + jwt);
 
         return jwt;
@@ -87,7 +86,7 @@ public class JwtProvider {
     */
 
     // 인증 처리를 하기 위한 토큰 해석 메서드
-    public UsernamePasswordAuthenticationToken getAuthentication(String authorization) {
+    public UsernamePasswordAuthenticationToken getAuthenticationToken(String authorization) {
          /*
             Authorization 헤더 값이 없거나 비어 있을 경우, 인증 중단
          */
@@ -106,9 +105,9 @@ public class JwtProvider {
 
             // JWT 토큰을 사용자 정보로 파싱(해석) 처리 하는 로직
             Jws<Claims> parsedToken = Jwts.parser()
-                    .verifyWith(shaKey)
-                    .build()
-                    .parseSignedClaims(jwt);
+                                            .verifyWith(shaKey)
+                                            .build()
+                                            .parseSignedClaims(jwt);
 
             log.info("parsedToken : " + parsedToken);
 

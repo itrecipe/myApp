@@ -82,9 +82,9 @@
     <update id="update">
         UPDATE users
         SET password = #{password}
-        ,name = #{name}
-        ,email = #{email}
-        ,updated_at = now()
+            ,name = #{name}
+            ,email = #{email}
+            ,updated_at = now()
         WHERE username = #{username}
     </update>
 

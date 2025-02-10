@@ -12,7 +12,6 @@ CREATE TABLE users (
     enabled     BOOLEAN DEFAULT TRUE
 );
 
-
 SELECT * FROM users;
 
 DROP TABLE IF EXISTS user_auth;

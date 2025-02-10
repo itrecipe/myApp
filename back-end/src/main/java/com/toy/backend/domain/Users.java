@@ -20,6 +20,7 @@ public class Users {
 
     private List<UserAuth> authList;
 
+    // db에 uid 값이 들어가야하기 떄문에 같이 셋팅 한다.
     public Users() {
         this.id = UUID.randomUUID().toString();
     }

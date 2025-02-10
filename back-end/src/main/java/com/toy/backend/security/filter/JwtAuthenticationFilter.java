@@ -74,7 +74,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
       : attemptAuthentication() 호출 후,
       반환된 Authentication 객체가 인증된 것이 확인 되면 호출되는 메소드
 
-       JWT
+       JWT가 들어오면
       : 로그인 인증에 성공, JWT 토큰 생성 (발행)
          Authorizaion 응답헤더에 jwt 토큰을 담아 응답
         { Authorizaion : Bearer + {jwt} }
@@ -89,11 +89,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         Users user = customUser.getUser(); // 유저 정보를 하나 꺼내 놓기
         String id = user.getId();
         String username = user.getUsername();
-        List<String> roles = user.getAuthList()
-                                .stream() // 스트림으로 돌려주고
-                                .map( GrantedAuthority::getAuthority ) // 맵으로 권한을 꺼내오기
-                                .collect(Collectors.toList() )
-                                ;
+        List<String> roles = customUser.getAuthorities()
+                                        .stream() // 스트림으로 돌려주고
+                                        .map( GrantedAuthority::getAuthority ) // 맵으로 꺼내오기
+                                        .collect( Collectors.toList() )
+                                        ;
 
         // JWT 생성
         String jwt = jwtProvider.createToken(id, username, roles);
@@ -101,5 +101,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         // Authorization 응답 헤더 세팅
         response.addHeader("Authorization", SecurityConstants.TOKEN_PREFIX + jwt);
         response.setStatus(200);
+
+        // 사용자 정보 body 세팅
+//
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        String jsonString = ObjectMapper.writeValueAsString(user);
     }
 }

@@ -1,6 +1,7 @@
 package com.toy.backend.config;
 
 import com.toy.backend.security.filter.JwtAuthenticationFilter;
+import com.toy.backend.security.filter.JwtRequestFilter;
 import com.toy.backend.security.provider.JwtProvider;
 import com.toy.backend.service.UserDetailServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,9 +9,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -54,6 +58,10 @@ public class SecurityConfig {
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity( prePostEnabled = true, securedEnabled = true )
+/* prePostEnabled = true로 활성화 시키면
+   @PreAuthorize 어노테이션 활성화가 가능하다. (사용 용도는 메서드 권한 관리)
+ */
 public class SecurityConfig {
 
     @Autowired
@@ -106,14 +114,22 @@ public class SecurityConfig {
         http.userDetailsService(userDetailServiceImpl); // 상단에 의존성 주입을 해둬야 설정이 가능하다. (기억할것!)
 
         /* 필터 설정
-           - JWT 인증 필터를 설정하는 작업
+           - JWT 요청 필터 설정 1
+           - JWT 인증 필터 설정 2
         */
-        http.addFilterAt( new JwtAuthenticationFilter(authenticationManager, jwtProvider),
-                            UsernamePasswordAuthenticationFilter.class );
+        http.addFilterAt( new JwtAuthenticationFilter(authenticationManager, jwtProvider)
+                         ,UsernamePasswordAuthenticationFilter.class )
+                        .addFilterBefore(new JwtRequestFilter(authenticationManager, jwtProvider)
+                        , UsernamePasswordAuthenticationFilter.class);
 
-
-        // 구성이 완료된 SecurityFilterChain을 반환합니다.
+        // 구성이 완료된 SecurityFilterChain을 반환 합니다.
         return http.build();
+    }
+
+    // 비밀번호 암호화 빈 등록
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
     /* TODO : deprecated 없애기 (version : before SpringSecurity 5.4 ⬇)
