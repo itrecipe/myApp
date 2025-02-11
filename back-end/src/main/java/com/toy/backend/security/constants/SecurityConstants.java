@@ -1,7 +1,6 @@
 package com.toy.backend.security.constants;
 
 // 해당 클래스는 Spring Security 및 JWT 관련 상수를 정의한 상수 클래스
-
 /*
       HTTP
           headers : {

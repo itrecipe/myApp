@@ -103,7 +103,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.setStatus(200);
 
         // 사용자 정보 body 세팅
-//
 //        ObjectMapper objectMapper = new ObjectMapper();
 //        String jsonString = ObjectMapper.writeValueAsString(user);
     }
