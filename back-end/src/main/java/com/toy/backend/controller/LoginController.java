@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 /*
     1. JWT 토큰 생성
     - 로그인 요청 -> 인증 -> JWT 토큰 생성
@@ -28,7 +27,6 @@ import java.util.List;
 public class LoginController {
     @Autowired
     private JwtProps jwtProps; // secretKey
-
     /*
         로그인 요청
         - 사용자가 로그인 요청을 통해 인증 시, JWT 토큰을 생성한다.
@@ -41,7 +39,6 @@ public class LoginController {
             "password" : "1234"
         }
      */
-
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthenticationRequest authReq) {
         /* (@RequestBody AuthenticationRequest authReq)
@@ -96,7 +93,6 @@ public class LoginController {
 
         return new ResponseEntity<>(jwt, HttpStatus.OK);
     }
-
     /* JWT 토큰 해석 : 클라이언트에서 인증 요청 시 보낸 JWT 토큰을 서버에서 해석(검증) 하는 작업
 
         @param header

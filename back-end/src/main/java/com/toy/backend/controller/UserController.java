@@ -72,9 +72,9 @@ public class UserController {
           @return
           @throws Exception
 
-       @PreAuthorize(" hasRole('ROLE_USER') ")                  // 사용자 권한
-       @PreAuthorize(" hasRole('ROLE_ADMIN') ")                 // 관리자 권한
-       @PreAuthorize(" hasAnyRole('ROLE_USER', 'ROLE_ADMIN') ")    // 사용자 OR ️ 관리자
+       @PreAuthorize(" hasRole('ROLE_USER') ")                   // 사용자 권한
+       @PreAuthorize(" hasRole('ROLE_ADMIN') ")                  // 관리자 권한
+       @PreAuthorize(" hasAnyRole('ROLE_USER', 'ROLE_ADMIN') ")  // 사용자 OR ️ 관리자
      */
 
     @PreAuthorize(" hasRole('ROLE_ADMIN') or #p0.username == authentication.name ") // 관리자 + 작성자(본인)
@@ -93,20 +93,18 @@ public class UserController {
     }
 
     // 회원 삭제 (탈퇴 처리)
-//    @PreAuthorize(" hasRole('ROLE_ADMIN') or #p0.username == authentication.name ") // 관리자 + 사용자
-//    @PutMapping("/{username}")
-//    public ResponseEntity<?> delete(@PathVariable("username") String username) throws Exception {
-//        try {
-//            boolean result = userService.delete(username);
-//
-//            if( result )
-//            //    log.info("회원 삭제 성공!");
-//                return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
-//            else
-//              //  log.info("회원 삭제 실패!");
-//                return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
-//            } catch (Exception e) {
-//                return new ResponseEntity<>("FAIL", HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
+    @PreAuthorize(" hasRole('ROLE_ADMIN') or #p0 == authentication.name ")
+    @DeleteMapping("/{username}")
+    public ResponseEntity<?> delete(
+            @PathVariable("username") String username) throws Exception {
+        try {
+            boolean result = userService.delete(username);
+            if( result )
+                return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
+            else
+                return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
+            } catch (Exception e) {
+                return new ResponseEntity<>("FAIL", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

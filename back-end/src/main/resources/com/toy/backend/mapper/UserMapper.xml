@@ -5,12 +5,11 @@
 
 <mapper namespace="com.toy.backend.mapper.UserMapper">
     <!-- resultMap은 SQL 결과를 Java 객체에 매핑해주는 역할을 한다.
-        property는 Java 객체의 필드를, column은 DB 컬럼명을 지정하여
-        데이터 변환을 자동화 할 수 있다.
+         property는 Java 객체의 필드를, column은 DB 컬럼명을 지정하여
+         데이터 변환을 자동화 할 수 있다.
     -->
 
     <!-- 트러블 슈팅!
-
         <resultMap type="domain.com.toy.backend.Users" id="userMap">
           type을 풀패지명으로 명확히 명시하면 매퍼가 연결되는데 명시하지 않았을때는 연결이 불가능 했다.
           뭔가 이상하다 싶어 전체적인 프로젝트 구조를 점검하며 살펴 보다가 찾아낸 원인은 application.properties에

@@ -77,7 +77,7 @@ public class SecurityConfig {
         public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
             this.authenticationManager = authenticationConfiguration.getAuthenticationManager();
             return authenticationManager;
-    }
+        }
     */
     private AuthenticationManager authenticationManager;
 
@@ -101,14 +101,14 @@ public class SecurityConfig {
         */
 
         // CSRF(Cross-Site Request Forgery) 공격 방어 기능 비활성화
-        http.csrf(csrf ->csrf.disable());
+        http.csrf(csrf ->csrf.disable() );
 
         /* 세션 관리 정책 설정: STATELESS로 설정하면 서버는 세션을 생성하지 않는다.
            세션을 사용하여 인증하지 않고, JWT만 사용하여 인증하기 때문에 현재 프로젝트에서는
            세션 방식을 사용하지 않고 JWT를 사용하기 때문에 여기서는 필요 없다.
          */
         http.sessionManagement(management ->management
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS) );
 
         // 사용자 정의 인증 설정
         http.userDetailsService(userDetailServiceImpl); // 상단에 의존성 주입을 해둬야 설정이 가능하다. (기억할것!)
@@ -120,7 +120,7 @@ public class SecurityConfig {
         http.addFilterAt( new JwtAuthenticationFilter(authenticationManager, jwtProvider)
                          ,UsernamePasswordAuthenticationFilter.class )
                         .addFilterBefore(new JwtRequestFilter(authenticationManager, jwtProvider)
-                        , UsernamePasswordAuthenticationFilter.class);
+                        , UsernamePasswordAuthenticationFilter.class );
 
         // 구성이 완료된 SecurityFilterChain을 반환 합니다.
         return http.build();
