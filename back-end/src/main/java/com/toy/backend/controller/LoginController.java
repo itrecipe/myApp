@@ -85,9 +85,9 @@ public class LoginController {
                     .add("typ", SecurityConstants.TOKEN_TYPE)            // 타입을 jwt 라고 지정한것 -> typ : "jwt"
                 .and()                                                     // 페이로드 설정
                 .claim("uid", username)                                 // 사용자 ID
-                .claim("rol", roles) //
-                .expiration( new Date(System.currentTimeMillis() + day5) )
-                .compact();
+                .claim("rol", roles)                                    // 권한 정보
+                .expiration( new Date(System.currentTimeMillis() + day5) ) // 만료시간
+                .compact();                                                // 토큰 생성
 
         log.info("jwt : " + jwt);
 

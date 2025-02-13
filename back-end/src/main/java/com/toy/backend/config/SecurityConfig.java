@@ -79,6 +79,7 @@ public class SecurityConfig {
             return authenticationManager;
         }
     */
+
     private AuthenticationManager authenticationManager;
 
     @Bean
@@ -87,7 +88,7 @@ public class SecurityConfig {
         return authenticationManager;
     }
 
-    // OK : (version : after SpringSecurity 5.4 ⬆)
+    // OK : (version : after SpringSecurity 5.4 이상 6버전)
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
@@ -132,7 +133,7 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    /* TODO : deprecated 없애기 (version : before SpringSecurity 5.4 ⬇)
+    /* TODO : deprecated 없애기 (version : before SpringSecurity 5.4 이하 버전)
 
          @Override
          protected void configure(HttpSecurity http) throws Exception {
