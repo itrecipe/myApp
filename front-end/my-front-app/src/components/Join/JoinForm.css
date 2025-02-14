@@ -1,0 +1,68 @@
+.form {
+    width: 400px;
+    margin: auto;
+    padding: 36px 48px 48px;
+    background-color: #f5f2e0;
+    border-radius: 11px;
+    box-shadow: 0 2.4rem 4.8rem rgba(0, 0, 0, 0.15);
+}
+
+.login-title {
+    padding: 15px;
+    font-size:22px;
+    font-weight: 60%;
+    text-align: center;
+}
+
+.login-form {
+    display: grid;
+    grid-template-columns: 1fr;
+    row-gap: 16px;
+}
+
+.login-form label {
+    display: block;
+    margin-bottom: 8px;
+}
+
+.login-form input {
+    width: 100%;
+    padding: 1.2rem;
+    border-radius: 10px;
+    border: none;
+}
+
+.login-form input:focus {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(253, 242, 233, 0.9);
+}
+
+.btn-form {
+    background-color: #f48982;
+    color: #fdf2e9;
+    padding: 8px;
+}
+
+.btn,
+.btn:link,
+.btn:visited {
+    display: inline-block;
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: 600;
+    border-radius: 9px;
+    border: none;
+    /* cursor: pointer; -> 마우스 커서를 
+    손가락 모양으로 변경하는 css 속성 */
+    cursor: pointer;
+    font-family: inherit; /* 부모 요소의 글꼴을 그대로 상속 받는다.*/
+    transition: all 0.3s;
+}
+
+.btn-login:hover {
+    outline: 1px solid #f48982;
+}
+.btn-form:hover {
+    background-color: #fdf2e9;
+    color: #F48982;
+}

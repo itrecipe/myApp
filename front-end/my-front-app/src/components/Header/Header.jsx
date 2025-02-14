@@ -14,7 +14,7 @@ const Header = () => {
   return (
     <header>
         <div className="logo">
-            <Link to="/">
+            <Link to="/Login/home">
                 <img src="https://i.imgur.com/fzADqJo.png" alt="logo" className='logo' />
             </Link>
         </div>
