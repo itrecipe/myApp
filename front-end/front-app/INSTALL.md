@@ -1,7 +1,7 @@
 # LOGIN & BOARD PART
 
 ## 라이브러리 전체 설지 (router & axios)
-npm install react-router-dom axios
+npm install react-router-dom axios js-cookie sweetalert2 sweetalert2-react-content
 
 ### react router dom
 npm install react-router-dom

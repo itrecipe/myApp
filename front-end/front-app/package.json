@@ -1,5 +1,5 @@
 {
-  "name": "board-app",
+  "name": "front-app",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -18,16 +18,16 @@
     "js-cookie": "^3.0.5",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^7.1.1",
-    "sweetalert2": "^11.15.10",
+    "react-router-dom": "^7.1.5",
+    "sweetalert2": "^11.16.0",
     "sweetalert2-react-content": "^5.1.0"
   },
   "devDependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
+    "@eslint/js": "^9.15.0",
     "@mui/icons-material": "^6.3.0",
     "@mui/material": "^6.3.0",
-    "@eslint/js": "^9.15.0",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.4",

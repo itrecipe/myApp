@@ -51,7 +51,7 @@ public class JwtProvider {
         // JWT 토큰 생성
         String jwt = Jwts.builder().signWith(shaKey, Jwts.SIG.HS512)            // 시그니처 비밀키, 알고리즘 설정
                 .header().add("typ", SecurityConstants.TOKEN_TYPE) // typ: jwt
-                .and().expiration(new Date(System.currentTimeMillis() + exp)) // 토큰만료시간설정 (5일)
+                .and().expiration(new Date(System.currentTimeMillis() + exp)) // 토큰 만료시간 설정 (5일)
                 .claim("id", id)                        // id       : 사용자 식별키
                 .claim("username", username)            // username : 사용자 아이디
                 .claim("rol", roles)                    // rol      : 회원 권한 목록
@@ -204,7 +204,7 @@ public class JwtProvider {
             log.info("토큰 만료기간 : " + expiration.toString());
 
             /* 날짜A.after( 날짜B )
-              : 날짜A가 날짜B 보다 더 위에 있으면 true
+              : 날짜A가 날짜B 보다 더 위에 있으면 true를 반환한다.
             */
             boolean result = expiration.after( new Date() );
             return result;
