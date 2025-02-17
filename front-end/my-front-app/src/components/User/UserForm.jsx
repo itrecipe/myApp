@@ -1,28 +1,24 @@
-import './JoinForm.css'
+const UserForm = ({ userInfo, updateUser, deleteUser }) => {
 
-const JoinForm = ({ join }) => {
+// 정보 수정
+const onUpdate = (e) => {
+    e.preventDefault() // 해당 이벤트 기본동작 막기(제거)
 
-  // 회원 가입하기 클릭
-  const onJoin = (e) => {
-    e.preventDefault() // submit의 기본 동작을 방지(제거) 한다.
-
-    // 폼 태그 안에 들어갈 정보 값을 꺼내오기
-    const form = e.target // 폼태그를 지정해서 들고오자
+    const form = e.target
     const username = form.username.value
     const password = form.password.value
     const name = form.name.value
     const email = form.email.value
+    console.log( username, password, name, email );
 
-    console.log(username, password, name, email);
-
-    // 객체로 묶어 요청 날리기
-    join( { username, password, name, email } )
-  }
+    updateUser( { username, password, name, email } )
+}
 
   return (
     <div className="form">
-        <h2 className="login-title">회원가입</h2>
-        <form className='login-form' onSubmit={ (e) => onJoin(e) }>
+        <h2 className="login-title">회원 정보</h2>
+        
+        <form className='login-form' onSubmit={ (e) => onUpdate(e) }>
             {/* username 입력 창*/}
             <div>
                 <label htmlFor="username">username</label>
@@ -31,8 +27,11 @@ const JoinForm = ({ join }) => {
                        placeholder='username'
                        name='username'
                        autoComplete="username"
-                       required />
+                       required 
+                       readOnly
+                       defaultValue={ userInfo?.username }/>
             </div>
+            
             {/* password 입력 창 */}
             <div>
                 <label htmlFor="password">password</label>
@@ -43,6 +42,7 @@ const JoinForm = ({ join }) => {
                        autoComplete='password'
                        required />
             </div>
+
             {/* name 입력 창 */}
             <div>
                 <label htmlFor="name">name</label>
@@ -51,8 +51,11 @@ const JoinForm = ({ join }) => {
                        placeholder='name'
                        name='name'
                        autoComplete='name'
-                       required />
+                       required 
+                       defaultValue={ userInfo?.name }
+                       />
             </div>
+            
             {/* email 입력 창 */}
             <div>
                 <label htmlFor="email">email</label>
@@ -61,16 +64,24 @@ const JoinForm = ({ join }) => {
                        placeholder='email'
                        name='email'
                        autoComplete='email'
-                       required />
+                       required
+                       defaultValue={ userInfo?.email }
+                       />
             </div>
 
-            {/* 회원가입 버튼 */}
+            {/* 회원 정보수정 버튼 */}
             <button type='submit' className="btn btn--form btn-login">
-                회원가입
+                정보 수정
+            </button>
+
+            {/* 회원 탈퇴 버튼 */}
+            <button type='submit' className="btn btn--form btn-login"
+                    onClick={ () => deleteUser( userInfo.username ) }>
+                회원 탈퇴
             </button>
         </form>
     </div>
   )
-};
+}
 
-export default JoinForm;
+export default UserForm

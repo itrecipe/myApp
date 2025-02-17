@@ -1,5 +1,6 @@
 package com.toy.backend.security.filter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.toy.backend.domain.CustomUser;
 import com.toy.backend.domain.Users;
 import com.toy.backend.security.constants.SecurityConstants;
@@ -17,6 +18,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -103,7 +105,13 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.setStatus(200);
 
         // 사용자 정보 body 세팅
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        String jsonString = ObjectMapper.writeValueAsString(user);
+        ObjectMapper ObjectMapper = new ObjectMapper(); //
+        String jsonString = ObjectMapper.writeValueAsString(user);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        // jsonString: " { 'username' : '사용자명', 'name' : '사용자', ... } "
+        PrintWriter printWriter = response.getWriter();
+        printWriter.write(jsonString);
+        printWriter.flush();
     }
 }
