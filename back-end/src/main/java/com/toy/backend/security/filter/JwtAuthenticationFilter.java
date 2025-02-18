@@ -48,7 +48,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String username = request.getParameter("username");
         String password = request.getParameter("password");
 
-        log.info("usename : " + username);
+        log.info("userename : " + username);
         log.info("password : " + password);
 
         // 인증토큰 객체 생성

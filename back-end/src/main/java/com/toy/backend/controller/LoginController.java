@@ -94,7 +94,6 @@ public class LoginController {
         return new ResponseEntity<>(jwt, HttpStatus.OK);
     }
     /* JWT 토큰 해석 : 클라이언트에서 인증 요청 시 보낸 JWT 토큰을 서버에서 해석(검증) 하는 작업
-
         @param header
         @return
     */

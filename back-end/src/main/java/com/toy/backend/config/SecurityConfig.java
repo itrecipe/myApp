@@ -102,7 +102,7 @@ public class SecurityConfig {
         */
 
         // CSRF(Cross-Site Request Forgery) 공격 방어 기능 비활성화
-        http.csrf(csrf ->csrf.disable() );
+        http.csrf(csrf ->csrf.disable());
 
         /* 세션 관리 정책 설정: STATELESS로 설정하면 서버는 세션을 생성하지 않는다.
            세션을 사용하여 인증하지 않고, JWT만 사용하여 인증하기 때문에 현재 프로젝트에서는
