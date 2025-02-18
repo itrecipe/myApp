@@ -73,7 +73,7 @@ const LoginContextProvider = ({ children }) => {
       // 로그인 실패 alert
       Swal.alert("로그인 실패", "ID or PW가 일치하지 않음!", "error");
       // 기존 디버깅 코드 console.log("로그인 실패! 및 이유 : "); 트러블 슈팅 :catch 블록에 error 정의 해두고 안써서 eslint 경고 및 오류 났었음.
-      console.log("로그인 실패! 및 이유 : " , error.message); // 개선한 디버깅 코드
+      console.log("로그인 실패! 및 이유 : ", error.message); // 개선한 디버깅 코드
     }
   };
 
@@ -176,7 +176,6 @@ const autoLogin = async () => {
     return
   }
 
-  // 
   console.log(`jwt : ${jwt}`);
   const authorization = `Bearer ${jwt}`
 
@@ -222,9 +221,9 @@ const autoLogin = async () => {
     }
     else {
       // 로딩 완료
-      setIsLoading(false)
+      setIsLoading(false) // 이미 로그인 상태인경우 바로 로딩을 종료
     }
-  });
+  }, []);
 
   return (
     // 컨텍스트 값 지정 -> value={ ?, ? }

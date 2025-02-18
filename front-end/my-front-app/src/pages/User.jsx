@@ -74,15 +74,27 @@ const User = () => {
   
   }
 
+  // useEffect( () => {
+  //   // 로딩중...
+  //   if( isLoading ) return
+
+  //   // 사용자 정보가 로딩완료 되었을때만 로그인 여부를 체크한다.
+  //   if( !isLogin || !roles.isUser ) {
+  //     navigate("/login")
+  //   }
+  // }, [isLoading])
+
+  // 개선 작업중
   useEffect( () => {
     // 로딩중...
     if( isLoading ) return
 
     // 사용자 정보가 로딩완료 되었을때만 로그인 여부를 체크한다.
-    if( !isLogin || !roles.isUser ) {
+    // 두 권한이 모두 없는 경우 로그인 페이지로 리다이렉트 한다.
+    if( !isLogin || !roles.isUser || !roles.isAdmin ) {
       navigate("/login")
     }
-  }, [isLoading])
+  }, [isLoading, isLogin, roles, navigate]);
 
   return (
     <>
