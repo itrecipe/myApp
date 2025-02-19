@@ -1,3 +1,5 @@
+import './UserForm.css'
+
 const UserForm = ({ userInfo, updateUser, deleteUser }) => {
 
 // 정보 수정
@@ -9,6 +11,7 @@ const onUpdate = (e) => {
     const password = form.password.value
     const name = form.name.value
     const email = form.email.value
+
     console.log( username, password, name, email );
 
     updateUser( { username, password, name, email } )

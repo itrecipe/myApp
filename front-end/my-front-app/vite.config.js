@@ -5,6 +5,7 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   server: {
+
     // 프록시 설정
     proxy: {
       '/api' : {

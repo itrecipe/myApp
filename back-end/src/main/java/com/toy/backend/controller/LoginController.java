@@ -114,11 +114,15 @@ public class LoginController {
         String secretKey = jwtProps.getSecretKey();
         byte[] signingKey = secretKey.getBytes();
 
+        log.info("secretKey 값 확인 : " + secretKey);
+
         // JWT 토큰 해석 : JWT 토큰을 가져와서 사용자의 정보를 꺼내온다.
         Jws<Claims> parsedToken = Jwts.parser()
                 .verifyWith(Keys.hmacShaKeyFor(signingKey))
                 .build()
                 .parseSignedClaims(jwt);
+
+        log.info("parsedToken 값 확인 : " + parsedToken);
 
         // 페이로드안의 속성들을 접근할 수 있는 객체를 만듬
         String username = parsedToken.getPayload().get("uid").toString();

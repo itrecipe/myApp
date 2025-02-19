@@ -1,25 +1,25 @@
 import './JoinForm.css'
-import { useState } from "react";
+// import { useState } from "react";
 
 const JoinForm = ({ join }) => {
 
-  const [selectedRoles, setSelectedRoles] = useState(["ROLE_USER"]) // 기본 권한 : ROLE_USER를 포함
+  // const [selectedRoles, setSelectedRoles] = useState(["ROLE_USER"]) // 기본 권한 : ROLE_USER를 포함
 
   //역할 선택 시 상태를 업데이트 (추가기능)
-  const handleRoleChange = (e) => {
-    const options = e.target.options;
-    console.log('options 값 : ', options)
+  // const handleRoleChange = (e) => {
+  //   const options = e.target.options;
+  //   console.log('options 값 : ', options)
 
-    const selected = [];
-    console.log("selected 값 : ", selected)
+  //   const selected = [];
+  //   console.log("selected 값 : ", selected)
     
-    for(let i = 0; i < options.length; i++) {
-      if (options[i].selected) {
-        selected.push(options[i].value);
-      }
-    }
-    setSelectedRoles(selected);
-  };
+  //   for(let i = 0; i < options.length; i++) {
+  //     if (options[i].selected) {
+  //       selected.push(options[i].value);
+  //     }
+  //   }
+  //   setSelectedRoles(selected);
+  // };
 
   // 회원 가입하기 클릭
   const onJoin = (e) => {
@@ -32,11 +32,14 @@ const JoinForm = ({ join }) => {
     const name = form.name.value
     const email = form.email.value
 
-    console.log(username, password, name, email, selectedRoles);
+    // console.log(username, password, name, email, selectedRoles);
+    console.log(username, password, name, email);
 
+    // join( { username, password, name, email, 
+    // authList: selectedRoles.map((role)=> ({auth: role}))} )
+    
     // 객체로 묶어 요청 날리기
-    join( { username, password, name, email, 
-      authList: selectedRoles.map((role)=> ({auth: role}))} )
+    join( { username, password, name, email })
   }
 
   return (
@@ -85,7 +88,7 @@ const JoinForm = ({ join }) => {
             </div>
 
             {/* 역할 선택 드롭다운 - 추가기능 */}
-            <div>
+            {/* <div>
               <label htmlFor='role'></label>
               <select name="role" id="role" multiple onChange={handleRoleChange}>
                 <option value="ROLE_USER" selected>
@@ -95,7 +98,7 @@ const JoinForm = ({ join }) => {
                   관리자
                 </option>
               </select>
-            </div>
+            </div> */}
 
             {/* 회원가입 버튼 */}
             <button type='submit' className="btn btn--form btn-login">

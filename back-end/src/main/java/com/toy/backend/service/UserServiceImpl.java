@@ -31,23 +31,22 @@ public class UserServiceImpl implements UserService {
         // 회원 등록
         int result = userMapper.join(user);
 
-        // 권한 등록
-//        if(result > 0) {
-//            UserAuth userAuth = UserAuth.builder()
-//                    .username(user.getUsername())
-//                    .auth("ROLE_USER")
-//                    .build();
-//            result += userMapper.insertAuth(userAuth);
+        // 권한 등록 (추가 및 개선중)
+//        if(result > 0 && user.getAuthList() != null) {
+//            for (UserAuth auth : user.getAuthList()) {
+//                auth.setUsername(user.getUsername()); // 사용자명 설정
+//                result += userMapper.insertAuth(auth);
+//            }
 //        }
 
-        // 권한 등록 (추가 및 개선중)
-        if(result > 0 && user.getAuthList() != null) {
-            for (UserAuth auth : user.getAuthList()) {
-                auth.setUsername(user.getUsername()); // 사용자명 설정
-                result += userMapper.insertAuth(auth);
-            }
+        // 권한 등록
+        if(result > 0) {
+            UserAuth userAuth = UserAuth.builder()
+                    .username(user.getUsername())
+                    .auth("ROLE_USER")
+                    .build();
+            result += userMapper.insertAuth(userAuth);
         }
-
 
         return result > 0;
     }
