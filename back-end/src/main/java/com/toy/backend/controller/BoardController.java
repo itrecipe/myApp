@@ -18,6 +18,6 @@ public class BoardController {
 
     @GetMapping()
     public RespinseEntity<?> getAllBoard() {
-        
+
     }
 }
