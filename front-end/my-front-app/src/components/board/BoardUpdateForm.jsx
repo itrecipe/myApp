@@ -30,7 +30,7 @@ const BoardUpdateFrom = () => {
     <div className="btn-box">
       <Link to="/boards" className="btn">목록</Link>
       <Link to={`/boards/update/${id}`} className="btn">수정</Link>
-      {/* 
+      {/*
          1. Link to={`/boards/update/${id}`} 여기서 id 번호(게시글 번호)를
           받아와야 하는데 useParams를 써서 값을 넘겨야 한다.
           상단에 useParams를 const로 선언 해주고 임포트 시키면

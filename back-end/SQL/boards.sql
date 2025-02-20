@@ -13,6 +13,7 @@ CREATE TABLE boards (
     updated_at  TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+-- 테이블 주석 달기
 COMMENT ON TABLE boards IS '게시판';
 COMMENT ON COLUMN boards.no IS 'PK';
 COMMENT ON COLUMN boards.id IS 'UK';
@@ -21,6 +22,7 @@ COMMENT ON COLUMN boards.writer IS '작성자';
 COMMENT ON COLUMN boards.content IS '내용';
 COMMENT ON COLUMN boards.created_at IS '등록일자';
 COMMENT ON COLUMN boards.updated_at IS '수정일자';
+
 
 -- 샘플 데이터 삽입
 TRUNCATE TABLE boards RESTART IDENTITY;

@@ -1,4 +1,7 @@
 package com.toy.backend.service;
 
-public class BoardService {
+import com.toy.backend.domain.Boards;
+
+public interface BoardService extends BaseService<Boards> {
+
 }
