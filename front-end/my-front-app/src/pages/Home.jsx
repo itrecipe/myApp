@@ -1,10 +1,16 @@
 import Header from "../components/Header/Header";
 
+// import { Link } from "react-router-dom";
+
 const Home = () => {
   return (
     <>
       <Header />
+      
       <div className="container">
+
+      {/* <Link to="/boards">게시판</Link><br/> */}
+
         <h1>Home - 메인 페이지</h1>
         <hr />
         Lorem, ipsum dolor sit amet consectetur adipisicing elit. Vero ratione
