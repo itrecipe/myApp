@@ -1,17 +1,17 @@
 import { Link } from "react-router-dom";
 
-const BoardList = () => {
+const BoardList = ({ boardList }) => {
 
   /* boardList 샘플 데이터 생성 
   (서버로부터 받은 데이터가 없을때 테스트용으로 사용)
   */
-  const boardList = [
-    { no: 1, title: "글 제목1", writer: "작성자1", "createdAt" : "2025-02-20 1:21:50" },
-    { no: 2, title: "글 제목2", writer: "작성자2", "createdAt" : "2025-02-20 1:21:50" },
-    { no: 3, title: "글 제목3", writer: "작성자3", "createdAt" : "2025-02-20 1:21:50" },
-    { no: 4, title: "글 제목4", writer: "작성자4", "createdAt" : "2025-02-20 1:21:50" },
-    { no: 5, title: "글 제목5", writer: "작성자5", "createdAt" : "2025-02-20 1:21:50" },
-  ]
+  // const boardList = [
+  //   { no: 1, title: "글 제목1", writer: "작성자1", "createdAt" : "2025-02-20 1:21:50" },
+  //   { no: 2, title: "글 제목2", writer: "작성자2", "createdAt" : "2025-02-20 1:21:50" },
+  //   { no: 3, title: "글 제목3", writer: "작성자3", "createdAt" : "2025-02-20 1:21:50" },
+  //   { no: 4, title: "글 제목4", writer: "작성자4", "createdAt" : "2025-02-20 1:21:50" },
+  //   { no: 5, title: "글 제목5", writer: "작성자5", "createdAt" : "2025-02-20 1:21:50" },
+  // ]
 
 
   return (

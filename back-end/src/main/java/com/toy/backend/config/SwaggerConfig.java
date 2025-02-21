@@ -13,7 +13,7 @@ public class SwaggerConfig {
     @Bean
     public GroupedOpenApi publicApi() {
         return GroupedOpenApi.builder()
-                .group("board") // 그룹명 설정
+                .group("toy") // 그룹명 설정
                 .pathsToMatch("/**") // 경로 설정
                 .build();
     }

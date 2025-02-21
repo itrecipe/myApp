@@ -1,5 +1,7 @@
 package com.toy.backend.service;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.toy.backend.domain.Boards;
 import com.toy.backend.mapper.BoardMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +32,7 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public boolean insert(Boards entity) {
         return boardMapper.insert(entity) > 0;
-        /* insert부터 deleteById 까지 1건이라도 데이터가
+        /* insert부터 deleteById까지 1건 이라도 데이터가
           있으면 true 또는 false로 응답하도록 느슨한 연결을 해준다.
          */
     }
@@ -53,5 +55,13 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public boolean deleteById(String id) {
         return boardMapper.deleteById(id) > 0;
+    }
+
+    @Override
+    public PageInfo<Boards> list(int page, int size) {
+        PageHelper.startPage(page,size);
+        List<Boards> list = boardMapper.list();
+        PageInfo<Boards> pageInfo = new PageInfo<>(list);
+        return pageInfo;
     }
 }

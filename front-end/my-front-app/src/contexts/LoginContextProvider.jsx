@@ -65,9 +65,7 @@ const LoginContextProvider = ({ children }) => {
         loginSetting(authorization, data);
 
         // 로그인 성공 alert
-        Swal.alert("로그인 성공", "메인 화면으로 이동중...", "success", () =>
-          navigate("/")
-        );
+        Swal.alert("로그인 성공", "메인 화면으로 이동중...", "success", () => navigate("/"));
       }
     } catch (error) {
       // 로그인 실패 alert
