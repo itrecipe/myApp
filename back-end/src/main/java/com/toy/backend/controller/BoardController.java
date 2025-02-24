@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @Slf4j
 @CrossOrigin("*") // *은 전체 경로 지정을 의미
@@ -42,20 +43,24 @@ public class BoardController {
             response.put("list", pageInfo.getList());
             response.put("pagination", pagination);
 
-            return new ResponseEntity<>(response, HttpStatus.OK);
             // return new ResponseEntity<>(boardList, HttpStatus.OK); // 1. 우선 게시글 목록 전체를 리턴 하기
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
+            log.error("BoardController: getAllBoard API 처리 중 오류 발생");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
     }
 
     @GetMapping("/{id}")
     // @PathVariable("id") 간혹 여기다 조회할 id값을 적지 않으면 springboot3 버전에 따라 지원되지 않는 경우가 있다고 한다.
-    public ResponseEntity<?> getOneBoard(@PathVariable("id") String id) {
+
+     public ResponseEntity<?> getOneBoard(@PathVariable("id") String id) {
         try {
             Boards board = boardService.selectById(id);
             return new ResponseEntity<>(board, HttpStatus.OK);
         } catch (Exception e) {
+            log.error("BoardController: getOneBoard API 처리 중 오류 발생", id, e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

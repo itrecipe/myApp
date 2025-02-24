@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
+import * as format from '../../utils/format'
 
 const BoardList = ({ boardList }) => {
+
+  console.log('boardList 값 : ', boardList)
 
   /* boardList 샘플 데이터 생성 
   (서버로부터 받은 데이터가 없을때 테스트용으로 사용)
@@ -12,7 +15,6 @@ const BoardList = ({ boardList }) => {
   //   { no: 4, title: "글 제목4", writer: "작성자4", "createdAt" : "2025-02-20 1:21:50" },
   //   { no: 5, title: "글 제목5", writer: "작성자5", "createdAt" : "2025-02-20 1:21:50" },
   // ]
-
 
   return (
     <div className="container">
@@ -29,6 +31,7 @@ const BoardList = ({ boardList }) => {
           </tr>
         </thead>
         <tbody>
+
           {/* 반복문 작성 : 테스트용 샘플데이터 반복을 
               시키기 위해 map으로 기존 tr태그에 적힌
               값들을 끌어옴 
@@ -78,10 +81,11 @@ const BoardList = ({ boardList }) => {
               }  
               */}
 
+               {/* 조건부 렌더링 추가 전 코드
               {
                 boardList.map( (board) => 
                   (
-                        <tr key={board.no}>
+                    <tr key={board.no}>
                           <td align='center'>{ board.no }</td>
                           <td align='left'>
                             <Link to={`/boards/${board.no}`}>
@@ -89,12 +93,42 @@ const BoardList = ({ boardList }) => {
                             </Link>
                           </td>
                           <td align='center'>{ board.writer }</td>
-                          <td align='center'>{ board.createdAt }</td>
+                              날짜 format 적용 이전 코드
+                              <td align='center'>{ board.createdAt }</td> 
+                          
+                          <td align='center'>{ format.formatDate( board.createdAt ) }</td>
+                        </tr>
+                    )
+                )
+              }  */}
+
+              {/* 조건부 렌더링 코드 추가 후 : 조회된 데이터가 없을시 */}
+              {
+                boardList.length === 0
+                ?
+                  <tr>
+                    <td colSpan={4}>조회된 데이터가 없어요!</td>
+                  </tr>
+                :
+                boardList.map( (board) => 
+                  (
+                    <tr key={board.no}>
+                          <td align='center'>{ board.no }</td>
+                          <td align='left'>
+                            {/* <Link to={`/boards/${board.no}`}> 게시글 번호를 받아오던 이전 코드 */}
+                            <Link to={`/boards/${board.id}`}>
+                              { board.title }
+                            </Link>
+                          </td>
+                          <td align='center'>{ board.writer }</td>
+                          {/* 날짜 format 적용 이전 코드
+                              <td align='center'>{ board.createdAt }</td> 
+                          */}
+                          <td align='center'>{ format.formatDate( board.createdAt ) }</td>
                         </tr>
                     )
                 )
               } 
-            
 
             {/* 반복시키기 전에 작성한 코드(샘플)
                 <tr>

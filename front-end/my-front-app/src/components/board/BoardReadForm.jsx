@@ -1,29 +1,35 @@
 import { Link, useParams } from 'react-router-dom'
 
-const BoardRead = () => {
+const BoardReadForm = ({ board }) => {
 
   const { id } = useParams()
+
+  // board가 아직 정의되지 않았으면 Loading 메시지 표시
+  if (!board || Object.keys(board).length === 0) {
+    return <div>Loading...</div>;
+  }
   
   return (
     <div className="div container">
       <h1 className="title">게시글 조회</h1>
-      <h3>번호: {id} </h3>
+      <h3>id: {id} </h3>
       <table>
         <tr>
           <td>제목</td>
           <td>
-            <input type="text" value={"제목1"} />
+      {/* <input type="text" value={"제목1"} /> value값 받기 전 코드*/}
+            <input type="text" readOnly value={board.title} />
           </td>
         </tr>
         <tr>
           <td>작성자</td>
           <td>
-            <input type="text" value={"작성자1"} />
+            <input type="text" readOnly value={board.writer} />
           </td>
         </tr>
         <tr>
           <td colSpan={2}>
-            <textarea cols={40} rows={10} value={"내용1"}></textarea>
+            <textarea cols={40} rows={10} readOnly value={board.content}></textarea>
           </td>
         </tr>
       </table>
@@ -38,7 +44,7 @@ const BoardRead = () => {
 
             2. TIP
             JSX에서는 자바스크립트 표현식을 사용시 중괄호 `{}`로 감싸야 한다.
-            백틱(``)을 사용한 템플릿 리터럴로 변수 값을 문자열에 포함시킴
+            백틱(``)을 사용한 템플릿 리터럴로 변수 값을 문자열에 포함 시킨다.
            `${id}` -> id 값을 문자열 안에 동적으로 삽입 한다.
             <Link to={`/boards/update/${id}`} className="btn">수정</Link>
         */}
@@ -47,4 +53,4 @@ const BoardRead = () => {
   )
 }
 
-export default BoardRead
+export default BoardReadForm

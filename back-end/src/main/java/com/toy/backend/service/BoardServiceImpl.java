@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class BoardServiceImpl implements BoardService {
@@ -28,6 +29,7 @@ public class BoardServiceImpl implements BoardService {
     public Boards selectById(String id) {
         return boardMapper.selectById(id);
     }
+
 
     @Override
     public boolean insert(Boards entity) {
@@ -57,6 +59,7 @@ public class BoardServiceImpl implements BoardService {
         return boardMapper.deleteById(id) > 0;
     }
 
+    // 페이징 (페이지 리스트 출력)
     @Override
     public PageInfo<Boards> list(int page, int size) {
         PageHelper.startPage(page,size);

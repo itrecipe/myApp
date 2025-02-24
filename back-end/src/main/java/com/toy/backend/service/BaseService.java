@@ -1,6 +1,7 @@
 package com.toy.backend.service;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface BaseService<E> {
     public List<E> list();

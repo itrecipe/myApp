@@ -28,7 +28,7 @@
     </select>
 
     <!-- 게시글 등록 -->
-    <insert id="insert" >
+    <insert id="insert">
         INSERT INTO boards( id, title, writer, content)
         VALUES( #{id}, #{title}, #{writer}, #{content} )
     </insert>
@@ -46,14 +46,14 @@
             <if test="content != null">
                 content = #{content},
             </if>
-                updated_at = now()
+            updated_at = now()
         </set>
         WHERE no = #{no}
     </update>
 
     <!-- 게시글 id 수정 -->
     <update id="updateById">
-         UPDATE boards
+        UPDATE boards
         <set>
             <if test="title != null">
                 title = #{title}
@@ -64,7 +64,7 @@
             <if test="content != null">
                 content = #{content}
             </if>
-                update_at = ${update_at}
+            update_at = ${update_at}
         </set>
         WHERE id = #{id}
     </update>
