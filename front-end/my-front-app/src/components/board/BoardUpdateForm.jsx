@@ -1,36 +1,95 @@
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 
-const BoardUpdateFrom = () => {
+const BoardUpdateFrom = ({ board, onUpdate, onDelete }) => {
+  const { id } = useParams();
 
-  const { id } = useParams()
+  // state 선언
+  const [title, setTitle] = useState("");
+  const [writer, setWriter] = useState("");
+  const [content, setContent] = useState("");
+
+  // change에 대한 이벤트 함수 등록
+  const changeTitle = (e) => {
+    setTitle(e.target.value);
+  };
+  const changeWriter = (e) => {
+    setWriter(e.target.value);
+  };
+  const changeContent = (e) => {
+    setContent(e.target.value);
+  };
+
+  /* 수정 버튼을 누를때 내려 받은 onInsert를 호출하며 
+       state(id, title, writer, content)를 전달하기
+    */
+  // 수정 이벤트 헨들러
+  const onSubmit = () => {
+    onUpdate(id, title, writer, content);
+  };
+
+  // 삭제 이벤트 핸들러
+  const handleDelete = () => {
+    const check = window.confirm("정말 삭제할까요?");
+    if (check) onDelete(id);
+  };
+
+  /* BoardUpdateForm이 마운트될 때,
+   board 객체가 존재하면 해당 객체의 title, writer, content 값을
+   각각 setTitle, setWriter, setContent 함수를 통해 상태에 설정한다.
+  */
+  useEffect( () => {
+    if( board ) {
+      setTitle(board.title)
+      setWriter(board.writer)
+      setContent(board.content)
+    }
+  }, [board])
 
   return (
-    <div className="div container">
-    <h1 className="title">게시글 수정</h1>
-    <h3>번호: {id} </h3>
-    <table>
-      <tr>
-        <td>제목</td>
-        <td>
-          <input type="text" value={"제목1"} />
-        </td>
-      </tr>
-      <tr>
-        <td>작성자</td>
-        <td>
-          <input type="text" value={"작성자1"} />
-        </td>
-      </tr>
-      <tr>
-        <td colSpan={2}>
-          <textarea cols={40} rows={10} value={"내용1"}></textarea>
-        </td>
-      </tr>
-    </table>
-    <div className="btn-box">
-      <Link to="/boards" className="btn">목록</Link>
-      <Link to={`/boards/update/${id}`} className="btn">수정</Link>
-      {/*
+    <div className="container">
+      <h1 className="title">게시글 수정</h1>
+      {/* <h3>id: {id} </h3> */}
+      <table>
+        <tr>
+          <td>제목</td>
+          <td>
+            {/* <input type="text" value={board.title} onChange={changeTitle} /> 
+              ex) value={board.title} 형식으로 화면에 뿌리면 부모에게서 내려 받은 고정값이 되기 때문에
+              값이 정상적으로 변경 되지 않는다.
+
+              아래에서 value 값을 state 형식으로 변경해줘야 한다. (writer, content 동일)
+              ex) value={title}
+          */}
+            <input type="text" value={title} onChange={changeTitle} />
+          </td>
+        </tr>
+        <tr>
+          <td>작성자</td>
+          <td>
+            <input type="text" value={writer} onChange={changeWriter} />
+          </td>
+        </tr>
+        <tr>
+          <td colSpan={2}>
+            <textarea
+              cols={40}
+              rows={10}
+              value={content}
+              onChange={changeContent}
+            ></textarea>
+          </td>
+        </tr>
+      </table>
+      <div className="btn-box">
+        <Link to="/boards" className="btn">
+          목록
+        </Link>
+        {/* <Link to={`/boards/update/${id}`} className="btn">수정</Link> 이전 코드 */}
+        <button onClick={onSubmit}>수정</button>
+        <button onClick={handleDelete}>삭제</button>
+
+        {/*
          1. Link to={`/boards/update/${id}`} 여기서 id 번호(게시글 번호)를
           받아와야 하는데 useParams를 써서 값을 넘겨야 한다.
           상단에 useParams를 const로 선언 해주고 임포트 시키면
@@ -42,9 +101,9 @@ const BoardUpdateFrom = () => {
          `${id}` -> id 값을 문자열 안에 동적으로 삽입 한다.
           <Link to={`/boards/update/${id}`} className="btn">수정</Link>
       */}
+      </div>
     </div>
-  </div>
-  )
-}
+  );
+};
 
-export default BoardUpdateFrom
+export default BoardUpdateFrom;

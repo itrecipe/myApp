@@ -4,7 +4,6 @@ const Read = () => {
 
   return (
     <>
-      <div>Read</div>
       <ReadContainer />
     </>
   );

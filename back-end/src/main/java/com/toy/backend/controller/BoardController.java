@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 @Slf4j
 @CrossOrigin("*") // *은 전체 경로 지정을 의미
@@ -78,34 +77,6 @@ public class BoardController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-//    @PostMapping()
-//    public ResponseEntity<?> createBoardFormData() {
-//        try {
-//
-//            return new ResponseEntity<>("GetAll Results", HttpStatus.OK);
-//        } catch (Exception e) {
-//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
-
-//    @PostMapping()
-//    public ResponseEntity<?> createBoardJSON() {
-//        try {
-//            return new ResponseEntity<>("GetAll Results", HttpStatus.OK);
-//        } catch (Exception e) {
-//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
-
-//    @PutMapping()
-//    public ResponseEntity<?> updateBoardForm() {
-//        try {
-//            return new ResponseEntity<>("GetAll Results", HttpStatus.OK);
-//        } catch (Exception e) {
-//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
 
     @PutMapping()
     public ResponseEntity<?> updateBoard(@RequestBody Boards board) {

@@ -4,3 +4,16 @@
   }
   
   hr { margin-bottom: 50px; }
+
+  input, textarea {
+    font-size: var(--font-size-main);
+  }
+  .link {
+    background-color: transparent;
+    color: black;
+    border: none;
+    font-size: var(--font-size-main);
+  }
+  h1.title {
+    text-align: center;
+  }

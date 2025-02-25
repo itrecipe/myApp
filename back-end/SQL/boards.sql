@@ -48,4 +48,4 @@ select * from boards;
 -- uuid 조회 쿼리 (테스트)
 select *
 from boards
-where id = 'c90dc84c-f093-4ccb-9c11-ad52f35f8c72';
+where id = '86bb0ee1-2164-4fd7-a7a5-d9b9a4a229a3';

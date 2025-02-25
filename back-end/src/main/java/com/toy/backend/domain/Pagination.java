@@ -45,7 +45,7 @@ public class Pagination {
 
     private long index; // SQL에 요청을 보낼때 사용되는 인덱스
 
-    // 생성자
+    // 기본 생성자
     public Pagination() {
         this(0);
     }

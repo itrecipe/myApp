@@ -46,7 +46,7 @@
             <if test="content != null">
                 content = #{content},
             </if>
-            updated_at = now()
+                updated_at = now()
         </set>
         WHERE no = #{no}
     </update>
@@ -56,15 +56,15 @@
         UPDATE boards
         <set>
             <if test="title != null">
-                title = #{title}
+                title = #{title},
             </if>
             <if test="writer != null">
-                writer = #{writer}
+                writer = #{writer},
             </if>
             <if test="content != null">
-                content = #{content}
+                content = #{content},
             </if>
-            update_at = ${update_at}
+            updated_at = now()
         </set>
         WHERE id = #{id}
     </update>
@@ -84,4 +84,3 @@
     </delete>
 
 </mapper>
-

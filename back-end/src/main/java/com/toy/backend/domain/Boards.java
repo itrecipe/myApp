@@ -11,7 +11,7 @@ import java.util.UUID;
 @Data
 public class Boards {
     private Long no;
-    private String id; // 기존 String 타입에서 UUID 타입으로 변경
+    private String id;
     private String title;
     private String writer;
     private String content;
@@ -22,7 +22,7 @@ public class Boards {
 
     // 파일 정보
 
-
+    // UUID 생성할 기본 생성자
     public Boards() {
         this.id = UUID.randomUUID().toString();
     }

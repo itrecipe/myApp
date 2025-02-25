@@ -18,7 +18,7 @@ const BoardList = ({ boardList }) => {
 
   return (
     <div className="container">
-      <h1>게시글 제목</h1>
+      <h1 className="title">게시글 제목</h1>
       <Link to="/boards/insert" className="btn">글쓰기</Link>
 
       <table border={1}>
