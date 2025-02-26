@@ -1,5 +1,8 @@
 import { Link } from "react-router-dom";
 import * as format from '../../utils/format'
+// import './css/BoardListForm.css' -> 기존까지 사용했던 일반적인 css 사용 방법
+import styles from './css/BoardListForm.module.css' // css를 모듈화해서 사용하는 방법
+
 
 const BoardList = ({ boardList }) => {
 
@@ -21,7 +24,8 @@ const BoardList = ({ boardList }) => {
       <h1 className="title">게시글 제목</h1>
       <Link to="/boards/insert" className="btn">글쓰기</Link>
 
-      <table border={1}>
+      {/* <table border={1} className='table'> */}
+      <table border={1} className={`${styles.table}`}>
         <thead>
           <tr>
             <th>번호</th>

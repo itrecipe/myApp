@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import * as boards from "../../apis/boards";
 import BoardUpdateForm from "../../components/board/BoardUpdateForm";
+import * as Swal from "../../apis/alert";
 
 const UpdateContainer = () => {
 
@@ -39,7 +40,7 @@ const UpdateContainer = () => {
       const data = await response.data // 데이터 응답 받기
       console.log('onUpdate_data: ', data);
 
-      alert("수정 완료!")
+      Swal.alert("수정 완료!")
 
       // 게시글 목록으로 이동
       navigate('/boards')
@@ -56,7 +57,7 @@ const UpdateContainer = () => {
       const data = await response.data // 데이터 응답 받기
       console.log('onDelete_data: ', data);
 
-      alert("삭제 완료!")
+      Swal.alert("삭제 완료!")
 
       // 게시글 목록으로 이동
       navigate('/boards')

@@ -14,7 +14,7 @@ const InsertContainer = () => {
       const data = await response.data // 데이터 응답 받기
       console.log('onInsert_data: ', data);
 
-      alert("수정 완료!")
+      alert("등록 완료!")
 
       // 게시글 목록으로 이동
       navigate('/boards')

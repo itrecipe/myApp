@@ -1,5 +1,7 @@
 import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import styles from './css/BoardUpdateForm.module.css'
+import * as Swal from "../../apis/alert";
 
 const BoardUpdateFrom = ({ board, onUpdate, onDelete }) => {
   const { id } = useParams();
@@ -25,14 +27,32 @@ const BoardUpdateFrom = ({ board, onUpdate, onDelete }) => {
     */
   // 수정 이벤트 헨들러
   const onSubmit = () => {
+    if (!title || !writer || !content) {
+      Swal.alert("모든 입력란을 채워 주세요!");
+      return;
+    }
     onUpdate(id, title, writer, content);
   };
 
   // 삭제 이벤트 핸들러
-  const handleDelete = () => {
-    const check = window.confirm("정말 삭제할까요?");
+/*   const handleDelete = () => {
+    const check = Swal.confirm("정말 삭제 할래요?");
+    console.log('check : ', check);
     if (check) onDelete(id);
-  };
+  }; */
+
+  const handleDelete = () => {
+    Swal.confirm({
+      title: '정말 삭제 할까요?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, 삭제',
+      cancelButtonText: 'No, 취소'
+    }).then((result) => {
+      if(result.isconfirmed) {
+        onDelete(id);
+      }
+    });
 
   /* BoardUpdateForm이 마운트될 때,
    board 객체가 존재하면 해당 객체의 title, writer, content 값을
@@ -50,9 +70,9 @@ const BoardUpdateFrom = ({ board, onUpdate, onDelete }) => {
     <div className="container">
       <h1 className="title">게시글 수정</h1>
       {/* <h3>id: {id} </h3> */}
-      <table>
+      <table className={styles.table}>
         <tr>
-          <td>제목</td>
+          <th>제목</th>
           <td>
             {/* <input type="text" value={board.title} onChange={changeTitle} /> 
               ex) value={board.title} 형식으로 화면에 뿌리면 부모에게서 내려 받은 고정값이 되기 때문에
@@ -61,13 +81,13 @@ const BoardUpdateFrom = ({ board, onUpdate, onDelete }) => {
               아래에서 value 값을 state 형식으로 변경해줘야 한다. (writer, content 동일)
               ex) value={title}
           */}
-            <input type="text" value={title} onChange={changeTitle} />
+            <input type="text" value={title} onChange={changeTitle} className={styles['form-input']} />
           </td>
         </tr>
         <tr>
-          <td>작성자</td>
+          <th>작성자</th>
           <td>
-            <input type="text" value={writer} onChange={changeWriter} />
+            <input type="text" value={writer} onChange={changeWriter} className={styles['form-input']} />
           </td>
         </tr>
         <tr>
@@ -77,6 +97,7 @@ const BoardUpdateFrom = ({ board, onUpdate, onDelete }) => {
               rows={10}
               value={content}
               onChange={changeContent}
+              className={styles['form-input']}
             ></textarea>
           </td>
         </tr>
@@ -86,8 +107,8 @@ const BoardUpdateFrom = ({ board, onUpdate, onDelete }) => {
           목록
         </Link>
         {/* <Link to={`/boards/update/${id}`} className="btn">수정</Link> 이전 코드 */}
-        <button onClick={onSubmit}>수정</button>
-        <button onClick={handleDelete}>삭제</button>
+        <button onClick={onSubmit} className='btn'>수정</button>
+        <button onClick={handleDelete} className='btn'>삭제</button>
 
         {/*
          1. Link to={`/boards/update/${id}`} 여기서 id 번호(게시글 번호)를
