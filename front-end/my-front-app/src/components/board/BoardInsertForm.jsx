@@ -16,21 +16,29 @@ const BoardInsertForm = ({ onInsert }) => {
   const changeWriter = (e) => { setWriter( e.target.value ) }
   const changeContent = (e) => { setContent( e.target.value ) }
 
-  /* 등록 버튼을 누를때 내려 받은 onInsert를 호출하며 
+  /* 등록 버튼을 누를때 내려 받은 onInsert를 호출하며
      state(title, writer, content)를 전달하기
-  */
-  const onSubmit = () => {
-    /* 트러블 슈팅 : 
-      
-      문제: 제목(title), 작성자(writer), 내용(content)이
-       비어 있어도 게시글이 등록되는 문제 발생
 
-      원인: 입력값 검증 없이 onInsert 함수가 실행됨
+      [트러블 슈팅]
+      
+      문제 상황 : 제목(title), 작성자(writer), 내용(content)이
+                비어 있어도 게시글이 등록되는 문제 발생
+
+      원인 분석: 입력값 검증 없이 onInsert 함수가 실행됨
 
       해결 방법: if 조건문을 추가하여 모든 필드가 입력된 경우에만 등록이 가능하도록 수정
       
       결과: 필수 입력값을 채우지 않으면 alert 창이 뜨고, 등록이 방지됨
+
+       [기존 문제 발생 코드]
+       const onSubmit = () => {
+        Swal.alert("빈칸 없이 모두 입력 해주세요!");
+        }
+        onInsert(title, writer, content)
+        }
+    
     */
+  const onSubmit = () => {
     if (!title || !writer || !content) { 
       Swal.alert("빈칸 없이 모두 입력 해주세요!");
       return

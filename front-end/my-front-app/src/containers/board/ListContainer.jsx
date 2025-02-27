@@ -13,7 +13,7 @@ const ListContainer = () => {
     const response = await boards.list()
     const data = await response.data
     const list = data.list
-    const pagination = data.pagination
+    // const pagination = data.pagination
 
     // 디버깅 코드 - 2
     console.dir(data)

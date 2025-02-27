@@ -3,21 +3,22 @@ package com.toy.backend.domain;
 import lombok.Data;
 
 /**
- * [페이징]
+ [페이징]
+
  * 1. 페이지 필수 정보
- * - 페이지 번호            : page
- * - 페이지당 게시글 수     : size
- * - 노출 페이지 개수       : count
- * - 전체 데이터 개수       : total
+  - 페이지 번호            : page
+  - 페이지당 게시글 수     : size
+  - 노출 페이지 개수       : count
+  - 전체 데이터 개수       : total
 
  * 2. 페이지 수식 정보
- * - 시작 번호              : start
- * - 끝 번호                : end
- * - 첫 번호                : first
- * - 마지막 번호            : last
- * - 이전 번호              : prev
- * - 다음 번호              : next
- * - 데이터 순서 번호        : index
+  - 시작 번호              : start
+  - 끝 번호                : end
+  - 첫 번호                : first
+  - 마지막 번호            : last
+  - 이전 번호              : prev
+  - 다음 번호              : next
+  - 데이터 순서 번호        : index
  */
 
 @Data

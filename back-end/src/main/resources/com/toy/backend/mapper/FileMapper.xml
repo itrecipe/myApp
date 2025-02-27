@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace="매퍼 인터페이스 경로" -->
+<mapper namespace="com.toy.backend.mapper.FileMapper">
+
+    <!-- 파일 리스트 조회 (전체 - 생성일 기준 내림차순) -->
+    <select id="list" resultType="files">
+        SELECT *
+        FROM files
+        ORDER BY created_at DESC
+    </select>
+
+    <!-- 파일 번호 조회 (단건)  -->
+    <select id="select" resultType="files">
+        SELECT *
+        FROM files
+        WHERE no = #{no}
+    </select>
+
+    <!-- 파일 id 조회  -->
+    <select id="selectById" resultType="files">
+        SELECT *
+        FROM files
+        WHERE id = #{id}
+    </select>
+
+    <!-- 파일 등록 -->
+    <insert id="insert">
+        INSERT INTO files
+            (
+                id, p_table, p_no, type,
+                file_name, origin_name,
+                file_path, file_size, seq
+            )
+        VALUES
+            (
+                #{id}, #{pTable}, #{pNo}, #{type},
+                #{fileName}, #{originName},
+                #{file_path} #{file_size} #{seq}
+            )
+    </insert>
+
+    <!-- 파일 수정 -->
+    <update id="update">
+        UPDATE files
+        <set>
+            <if test="title != null">
+                title = #{title},
+            </if>
+            <if test="writer != null">
+                writer = #{writer},
+            </if>
+            <if test="content != null">
+                content = #{content},
+            </if>
+            updated_at = now()
+        </set>
+        WHERE no = #{no}
+    </update>
+
+    <!-- 파일 id 수정 -->
+    <update id="updateById">
+        UPDATE files
+        <set>
+            <if test="title != null">
+                title = #{title},
+            </if>
+            <if test="writer != null">
+                writer = #{writer},
+            </if>
+            <if test="content != null">
+                content = #{content},
+            </if>
+            updated_at = now()
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 파일 번호 삭제   -->
+    <delete id="delete">
+        DELETE
+        FROM files
+        WHERE no = #{no}
+    </delete>
+
+    <!-- 파일 id 삭제 -->
+    <delete id="deleteById">
+        DELETE
+        FROM files
+        WHERE id = #{id}
+    </delete>
+</mapper>

@@ -1,6 +1,7 @@
 import BoardInsertForm from '../../components/board/BoardInsertForm'
 import * as boards from '../../apis/boards'
 import { useNavigate } from 'react-router-dom';
+import * as Swal from '../../apis/alert'
 
 const InsertContainer = () => {
 
@@ -14,7 +15,7 @@ const InsertContainer = () => {
       const data = await response.data // 데이터 응답 받기
       console.log('onInsert_data: ', data);
 
-      alert("등록 완료!")
+      Swal.alert("등록 완료!")
 
       // 게시글 목록으로 이동
       navigate('/boards')
