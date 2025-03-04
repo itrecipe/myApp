@@ -18,10 +18,10 @@ public class Boards {
     private String writer;
     private String content;
     private Date createdAt;
-    private Date updateAt;
+    private Date updatedAt;
 
     // 파일 (여러개의 첨부 파일을 가져올 리스트)
-    private MultipartFile mainFile; // 메인 파일 가져오기
+    private MultipartFile mainFile; // 메인(대표) 파일 가져오기
     private List<MultipartFile> files;
 
     // 파일 정보

@@ -2,15 +2,19 @@ package com.toy.backend.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.toy.backend.domain.Boards;
+import com.toy.backend.domain.Files;
 import com.toy.backend.domain.Pagination;
 import com.toy.backend.service.BoardService;
+import com.toy.backend.service.FileService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -20,6 +24,7 @@ import java.util.Map;
 public class BoardController {
 
     @Autowired BoardService boardService;
+    @Autowired FileService fileService;
 
     @GetMapping()
     public ResponseEntity<?> getAllBoard(
@@ -48,28 +53,84 @@ public class BoardController {
             log.error("BoardController: getAllBoard API 처리 중 오류 발생");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
     }
 
-    @GetMapping("/{id}")
-    // @PathVariable("id") 간혹 여기다 조회할 id값을 적지 않으면 springboot3 버전에 따라 지원되지 않는 경우가 있다고 한다.
+    /* 초기 작성 코드 getOneBoard (파일 업로드 적용 전 게시판에 사용하던 로직)
+        @GetMapping("/{id}")
+        // @PathVariable("id") 간혹 여기다 조회할 id 값을 적지 않으면 springboot3 버전에 따라 지원되지 않는 경우가 있다고 한다.
+         public ResponseEntity<?> getOneBoard(@PathVariable("id") String id) {
+            try {
+                Boards board = boardService.selectById(id);
+                return new ResponseEntity<>(board, HttpStatus.OK);
+            } catch (Exception e) {
+                log.error("BoardController: getOneBoard API 처리 중 오류 발생", id, e);
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+    */
 
-     public ResponseEntity<?> getOneBoard(@PathVariable("id") String id) {
+    @GetMapping("/{id}")
+     public ResponseEntity<?> getOneBoard(
+             @PathVariable("id") String id,
+             Files file
+    ) {
         try {
             Boards board = boardService.selectById(id);
-            return new ResponseEntity<>(board, HttpStatus.OK);
+            // 파일 목록 조회
+            file.setPTable("boards");
+            file.setPNo(board.getNo());
+            List<Files> fileList = fileService.listByParent(file);
+            Map<String, Object> response = new HashMap<>();
+            response.put("board", board);
+            response.put("fileList", fileList);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
-            log.error("BoardController: getOneBoard API 처리 중 오류 발생", id, e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @PostMapping()
-    public ResponseEntity<?> createBoard(@RequestBody Boards board) {
+    /* 초기 작성 코드 createBoard (파일 업로드 적용 전 게시판에 사용하던 로직)
+        @PostMapping()
+        public ResponseEntity<?> createBoard(@RequestBody Boards board) {
+            try {
+                boolean result = boardService.insert(board);
+                if( result ) {
+                    return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
+                }
+            } catch (Exception e) {
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+    */
+
+    /* @RequestBody 붙이고 안 붙이고 차이
+      - @RequestBody / O : application/json, application/xml
+      - @RequestBody / X : application/form-data, application/x-www-form-urlencoded
+     */
+    @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> createBoardFormData(Boards board) {
+        log.info("게시글 등록 - multipart/form-data");
         try {
             boolean result = boardService.insert(board);
             if( result ) {
-                return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
+                return new ResponseEntity<>("SUCCESS", HttpStatus.CREATED);
+            } else {
+                return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping(value="", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> createBoardJSON(@RequestBody Boards board) {
+        log.info("게시글 등록 - application/json");
+        try {
+            boolean result = boardService.insert(board);
+            if( result ) {
+                return new ResponseEntity<>("SUCCESS", HttpStatus.CREATED);
             } else {
                 return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
             }

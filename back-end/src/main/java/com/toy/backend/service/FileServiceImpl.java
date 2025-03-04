@@ -52,7 +52,7 @@ public class FileServiceImpl implements FileService {
         return fileMapper.updateById(entity) > 0;
     }
 
-  /*  기존 초기 코드 (샘플)
+  /*  초기 작성 코드 (delete, deleteById)
         @Override
         public boolean delete(Long no) {
             return fileMapper.delete(no) > 0;
@@ -82,6 +82,13 @@ public class FileServiceImpl implements FileService {
     public List<Files> listByParent(Files file) {
         return fileMapper.listByParent(file);
     }
+
+    /* 초기 작성 코드 (deleteByParent)
+        @Override
+        public int deleteByParent(Files file) {
+            return fileMapper.deleteByParent(file);
+        }
+    */
 
     @Override
     public int deleteByParent(Files file) {

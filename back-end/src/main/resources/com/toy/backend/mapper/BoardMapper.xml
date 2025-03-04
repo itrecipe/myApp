@@ -27,11 +27,22 @@
         WHERE id = #{id}
     </select>
 
-    <!-- 게시글 등록 -->
+    <!-- 초기에 작성한 게시글 등록 쿼리
     <insert id="insert">
         INSERT INTO boards( id, title, writer, content)
         VALUES( #{id}, #{title}, #{writer}, #{content} )
     </insert>
+    -->
+
+    <!-- 게시글 등록
+        (fileUpload 기능을 위해 쿼리 수정 : AutoIncrement로 1 자동 증가된 넘버 값이 들어오면 Boards 객체에 no 값을 넣어준다.)
+    -->
+    <!-- 자동으로 증가된 boards의 no를 Boards 객체의 no 변수에 넣어준다. -->
+    <insert id="insert" parameterType="Boards" useGeneratedKeys="true" keyProperty="no">
+        INSERT INTO boards( id, title, writer, content)
+        VALUES( #{id}, #{title}, #{writer}, #{content} )
+    </insert>
+
 
     <!-- 게시글 수정 -->
     <update id="update">
