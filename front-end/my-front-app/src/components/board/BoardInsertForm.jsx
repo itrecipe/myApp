@@ -1,20 +1,25 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useState } from "react";
+import { Link } from "react-router-dom";
 // import './css/BoardInsertForm.css'
-import styles from './css/BoardInsertForm.module.css'
-import * as Swal from '../../apis/alert'
+import styles from "./css/BoardInsertForm.module.css";
+import * as Swal from "../../apis/alert";
 
 const BoardInsertForm = ({ onInsert }) => {
-
   // state 선언
-  const [title, setTitle] = useState('')
-  const [writer, setWriter] = useState('')
-  const [content, setContent] = useState('')
+  const [title, setTitle] = useState("");
+  const [writer, setWriter] = useState("");
+  const [content, setContent] = useState("");
 
   // change에 대한 이벤트 함수 등록
-  const changeTitle = (e) => { setTitle( e.target.value ) }
-  const changeWriter = (e) => { setWriter( e.target.value ) }
-  const changeContent = (e) => { setContent( e.target.value ) }
+  const changeTitle = (e) => {
+    setTitle(e.target.value);
+  };
+  const changeWriter = (e) => {
+    setWriter(e.target.value);
+  };
+  const changeContent = (e) => {
+    setContent(e.target.value);
+  };
 
   /* 등록 버튼을 누를때 내려 받은 onInsert를 호출하며
      state(title, writer, content)를 전달하기
@@ -36,15 +41,17 @@ const BoardInsertForm = ({ onInsert }) => {
         }
         onInsert(title, writer, content)
         }
+
+        -> 문제를 개선한 코드는 아래 onSubmit() 참조
     
     */
   const onSubmit = () => {
-    if (!title || !writer || !content) { 
+    if (!title || !writer || !content) {
       Swal.alert("빈칸 없이 모두 입력 해주세요!");
-      return
+      return;
     }
-    onInsert(title, writer, content)
-  }
+    onInsert(title, writer, content);
+  };
 
   return (
     <div className="container">
@@ -69,27 +76,44 @@ const BoardInsertForm = ({ onInsert }) => {
             */}
 
             {/* <input type="text" onChange={changeTitle} className={`${styles.formInput}`} /> */}
-            <input type="text" onChange={changeTitle} className={styles['form-input']} />
+            <input
+              type="text"
+              onChange={changeTitle}
+              className={styles["form-input"]}
+            />
           </td>
         </tr>
         <tr>
           <th>작성자</th>
           <td>
-            <input type="text" onChange={changeWriter} className={styles['form-input']} />
+            <input
+              type="text"
+              onChange={changeWriter}
+              className={styles["form-input"]}
+            />
           </td>
         </tr>
         <tr>
           <td colSpan={2}>
-            <textarea cols={40} rows={10} onChange={changeContent} className={styles['form-input']} ></textarea>
+            <textarea
+              cols={40}
+              rows={10}
+              onChange={changeContent}
+              className={styles["form-input"]}
+            ></textarea>
           </td>
         </tr>
       </table>
       <div className="btn-box">
-        <Link to="/boards" className="btn">목록</Link>
-        <button className="btn" onClick={ onSubmit }>등록</button>
+        <Link to="/boards" className="btn">
+          목록
+        </Link>
+        <button className="btn" onClick={onSubmit}>
+          등록
+        </button>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default BoardInsertForm
+export default BoardInsertForm;

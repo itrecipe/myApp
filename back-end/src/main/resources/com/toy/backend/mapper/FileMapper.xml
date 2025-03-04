@@ -7,89 +7,192 @@
 <mapper namespace="com.toy.backend.mapper.FileMapper">
 
     <!-- 파일 리스트 조회 (전체 - 생성일 기준 내림차순) -->
-    <select id="list" resultType="files">
+    <select id="list" resultType="Files">
         SELECT *
         FROM files
         ORDER BY created_at DESC
     </select>
 
     <!-- 파일 번호 조회 (단건)  -->
-    <select id="select" resultType="files">
+    <select id="select" resultType="Files">
         SELECT *
         FROM files
         WHERE no = #{no}
     </select>
 
     <!-- 파일 id 조회  -->
-    <select id="selectById" resultType="files">
+    <select id="selectById" resultType="Files">
         SELECT *
         FROM files
         WHERE id = #{id}
     </select>
 
+    <!--
+                [에러 메시지]
+                cause: org.postgresql.util.psqlexception:
+                오류: 열 "type"은(는) file_type 자료형인데 표현식은 character varying 자료형입니다. %0d%0a
+                hint: 다시 정의하거나 형변환자를 사용해보십시오
+
+                [트러블 슈팅] : 파일 등록시 파일 타입이 맞지 않아 insert 처리 안되는 문제 발생
+
+                1. 문제 상황 (원인 분석) : PostgreSQL에서는 #{type} 컬럼이 미리 정해진 값만 받을 수 있는 ENUM 타입(여기서는 file_type)
+                                       으로 되어있음 그런데 MyBatis에서 넘겨주는 값은 그냥 일반 문자열(String)이라서,
+                                       PostgreSQL이 그걸 자동으로 변환해주지 못하는 문제가 발생
+
+                2. 해결 방법 (개선 방안) : 방법1 : 쿼리에서 캐스팅 후 직접 변환, 방법2. Java에서 ENUM 사용
+                                       해당 프로젝트에선 제일 간단한 쿼리에서 직접 변환 하는 방법을 적용해볼 예정
+
+                3. 결과 :  위 방법1을 (쿼리에서 직접 캐스팅 후 변환) 적용하여 해결,
+                          쿼리에서 캐스팅 처리 후 값을 삽입 하는 방식으로 로직 수정
+
+                          [기존 문제 발생 코드]
+                          VALUES
+                                (
+                                    #{id}, #{pTable}, #{pNo}, #{type}
+                                    #{fileName}, #{originName}, #{filePath},
+                                    #{fileSize}, #{seq}
+                                )
+
+                          -> 문제를 개선한 코드는 아래 파일등록 (insert) 쿼리 참조
+            -->
+
     <!-- 파일 등록 -->
     <insert id="insert">
         INSERT INTO files
-            (
-                id, p_table, p_no, type,
-                file_name, origin_name,
-                file_path, file_size, seq
-            )
+        (
+            id, p_table, p_no, type,
+            file_name, origin_name,
+            file_path, file_size, seq
+        )
         VALUES
-            (
-                #{id}, #{pTable}, #{pNo}, #{type},
-                #{fileName}, #{originName},
-                #{file_path} #{file_size} #{seq}
-            )
+        (
+            #{id}, #{pTable}, #{pNo},
+            CAST(#{type} AS file_type),
+            #{fileName}, #{originName}, #{filePath},
+            #{fileSize}, #{seq}
+        )
     </insert>
 
-    <!-- 파일 수정 -->
+    <!-- 파일 수정 (no) -->
     <update id="update">
         UPDATE files
-        <set>
-            <if test="title != null">
-                title = #{title},
-            </if>
-            <if test="writer != null">
-                writer = #{writer},
-            </if>
-            <if test="content != null">
-                content = #{content},
-            </if>
-            updated_at = now()
-        </set>
-        WHERE no = #{no}
-    </update>
+            <set>
+                <if test="type != null">
+                    type = #{type},
+                </if>
+                <if test="pTable != null">
+                    p_table = #{pTable},
+                </if>
+                <if test="pNo != null">
+                    p_no = #{pNo},
+                </if>
+                <if test="fileName != null">
+                    file_name = #{pNo},
+                </if>
+                <if test="originName != null">
+                    origin_name = #{originName},
+                </if>
+                <if test="filePath != null">
+                    file_path = #{filePath},
+                </if>
+                <if test="fileSize != null">
+                    file_size = #{fileSize},
+                </if>
+                <if test="seq != null">
+                    seq = #{seq},
+                </if>
+                    updated_at = now()
+            </set>
+            WHERE no = #{no}
+        </update>
 
-    <!-- 파일 id 수정 -->
-    <update id="updateById">
-        UPDATE files
-        <set>
-            <if test="title != null">
-                title = #{title},
-            </if>
-            <if test="writer != null">
-                writer = #{writer},
-            </if>
-            <if test="content != null">
-                content = #{content},
-            </if>
-            updated_at = now()
-        </set>
-        WHERE id = #{id}
-    </update>
+        <!-- 파일 수정 (id) -->
+        <update id="updateById">
+            UPDATE files
+                <set>
+                    <if test="type != null">
+                        type = #{type},
+                    </if>
+                    <if test="pTable != null">
+                        p_table = #{pTable},
+                    </if>
+                    <if test="pNo != null">
+                        p_no = #{pNo},
+                    </if>
+                    <if test="fileName != null">
+                        file_name = #{fileName},
+                    </if>
+                    <if test="originName != null">
+                        origin_name = #{originName},
+                    </if>
+                    <if test="filePath != null">
+                        file_path = #{filePath},
+                    </if>
+                    <if test="fileSize != null">
+                        file_size = #{fileSize},
+                    </if>
+                    <if test="seq != null">
+                        seq = #{seq},
+                    </if>
+                    updated_at = now()
+                </set>
+                WHERE id = #{id}
+        </update>
 
-    <!-- 파일 번호 삭제   -->
-    <delete id="delete">
-        DELETE
-        FROM files
-        WHERE no = #{no}
-    </delete>
+        <!-- 파일 삭제 (no) -->
+        <delete id="delete">
+            DELETE
+            FROM files
+            WHERE no = #{no}
+        </delete>
 
-    <!-- 파일 id 삭제 -->
-    <delete id="deleteById">
-        DELETE
-        FROM files
-        WHERE id = #{id}
-    </delete>
+        <!-- 파일 삭제 (id) -->
+        <delete id="deleteById">
+            DELETE
+            FROM files
+            WHERE id = #{id}
+        </delete>
+
+        <!-- 부모 테이블 기준 목록 -->
+        <select id="listByParent" resultType="Files">
+            SELECT *
+            FROM files
+            WHERE
+            p_table = #{pTable}
+            AND p_no = #{pNo}
+            ORDER BY seq ASC
+        </select>
+
+        <!-- 부모 테이블 기준 삭제 -->
+        <delete id="deleteByParent">
+            DELETE FROM files
+            WHERE
+                p_table = ${pTable}
+            AND p_no = #{pNo}
+        </delete>
+
+        <!-- #{} vs ${} 차이점
+             1. #{변수명} -> '값'
+             #으로 변수명을 적어 값을 보내면 문자열 형식으로 보낸다.
+
+             2. ${변수명} -> 값
+             $로 변수명을 적어주면 값을 묶지 않고 그대로 보낸다.
+         -->
+
+        <!-- 선택 삭제 - no
+            input 형식 : no IN (1, 2, 3)
+        -->
+        <delete id="deleteFiles">
+            DELETE FROM files
+            WHERE no IN ( ${no} )
+        </delete>
+
+        <!-- 선택 삭제 - id
+            input 형식 : id IN ('ID1', 'ID2', 'ID3')
+        -->
+        <delete id="deleteFilesById">
+            DELETE FROM files
+            WHERE id IN ( ${id} )
+        </delete>
+
 </mapper>

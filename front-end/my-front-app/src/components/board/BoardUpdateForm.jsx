@@ -44,7 +44,7 @@ const BoardUpdateForm = ({ board, onUpdate, onDelete }) => {
        onUpdate(id, title, writer, content);
      }; 
 
-     [발생된 문제를 개선한 코드는 아래 onSubmit 코드 참조]
+     -> 발생된 문제를 개선한 코드는 아래 onSubmit 코드 참조
   */
 
   /* 수정 버튼을 누를때 내려 받은 onInsert를 호출하며 
@@ -77,7 +77,7 @@ const BoardUpdateForm = ({ board, onUpdate, onDelete }) => {
         if (check) onDelete(id);
       }; 
     
-    [문제를 개선한 코드는 아래 handleDelete 함수 참조]
+    -> 문제를 개선한 코드는 아래 handleDelete 함수 참조
     */
 
   // 삭제 이벤트 핸들러 - 2 (개선 완료)

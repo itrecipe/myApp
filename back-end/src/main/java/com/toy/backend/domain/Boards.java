@@ -1,8 +1,10 @@
 package com.toy.backend.domain;
 
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 /* @Data : 자동으로 Getter, Setter, 생성자, toString(), equals() 같은 메서드를 만들어주는 도구,
@@ -18,7 +20,9 @@ public class Boards {
     private Date createdAt;
     private Date updateAt;
 
-    // 파일
+    // 파일 (여러개의 첨부 파일을 가져올 리스트)
+    private MultipartFile mainFile; // 메인 파일 가져오기
+    private List<MultipartFile> files;
 
     // 파일 정보
 
