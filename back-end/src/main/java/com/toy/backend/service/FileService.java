@@ -23,9 +23,9 @@ public interface FileService extends BaseService<Files> {
     public int download(String id, HttpServletResponse response) throws Exception;
 
     // 선택 삭제 (no)
-    public int deleteFiles(String noList);
+    // public int deleteFiles(String noList);
 
     // 선택 삭제 (id)
-    public int deleteFilesById(String idList);
+    // public int deleteFilesById(String idList);
 
 }

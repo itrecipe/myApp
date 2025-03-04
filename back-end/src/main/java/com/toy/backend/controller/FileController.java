@@ -78,9 +78,26 @@ public class FileController {
         }
     }
 
-    // [DELETE] /files
-    //
+    /* [DELETE] /files
+       { "idList" : ['id1', 'id2', 'id3'] }
+
+       파일 선택 삭제 (input 형식)
+       @param noList : { "noList" : [1, 2, 3] }
+       @param noList : ?noList=1, 2, 3  -> 바디로 전달이 되는지 확인
+       @param idList : { "idList" : ['id1', 'id2', 'id3'] }
+       @param idList : idList='id1', 'id2', 'id3' -> 쿼리 스트링으로 전달이 되는지 확인
+       @return
+     */
+
     @DeleteMapping("")
+    public ResponseEntity<?> deleteFiles(
+        @RequestParam("noList") List<Long> noList,
+        @RequestParam("idList") List<String> idList
+    ) {
+        log.info("noList[] : " + noList);
+        log.info("idList[] : " + idList);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
     /* 파일 다운로드
      */

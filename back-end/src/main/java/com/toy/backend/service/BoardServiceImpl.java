@@ -49,39 +49,50 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public boolean insert(Boards entity) {
         // 게시글 등록
-        int result = boardMapper.insert(entity);
+        int result = boardMapper.insert(entity); // 등록 먼저 해주기
 
         // 파일 업로드
         result += upload(entity);
         return result > 0;
     }
 
+    /*
+        - 파일 업로드
+        @param entity
+        @return
+     */
     public int upload(Boards entity) {
-        int result = boardMapper.insert(entity); // 등록 먼저 해주기
+        int result = 0;
+        String pTable = "boards";
+        Long pNo = entity.getNo();
 
         List<Files> uploadFileList = new ArrayList<>();
 
         MultipartFile mainFile = entity.getMainFile(); // 메인 파일은 별도로 꺼내서 넣어주기
-        Files mainFileInfo = new Files();
-        mainFileInfo.setPTable(pTable);
-        mainFileInfo.setPNo(pNo);
-        mainFileInfo.setData(mainFile);
-        mainFileInfo.setType("MAIN");
+        if( mainFile != null && !mainFile.isEmpty() ) {
+            Files mainFileInfo = new Files();
+            mainFileInfo.setPTable(pTable);
+            mainFileInfo.setPNo(pNo);
+            mainFileInfo.setData(mainFile);
+            mainFileInfo.setType("MAIN");
+        }
 
         // 파일 테이블의 데이터를 정리해서 넘겨주기
         List<MultipartFile> files = entity.getFiles();
-        if( files != null && !files.isEmpty())
-        String pTable = "boards";
-        Long pNo = entity.getNo();      // 설정?
+        if( files != null && !files.isEmpty() ) {
+//        String pTable = "boards";
+//        Long pNo = entity.getNo();      // 설정?
         List<MultipartFile> files = entity.getFiles();
         if ( files != null && !files.isEmpty() ) {
             for(MultipartFile multipartFile : files) {
+                if( multipartFile.isEmpty() )
+                    continue;
                 Files fileInfo = new Files();
                 fileInfo.setPTable(pTable);
                 fileInfo.setPNo(pNo);
                 fileInfo.setData(multipartFile);
                 fileInfo.setType("SUB");
-                fileService.upload(fileInfo);
+                uploadFileList.upload(fileInfo);
             }
         }
 
