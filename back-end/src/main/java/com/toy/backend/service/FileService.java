@@ -20,7 +20,7 @@ public interface FileService extends BaseService<Files> {
     public int upload(List<Files> fileList) throws Exception;
 
     // 파일 다운로드
-    // public int download(String id, HttpServletResponse response) throws Exception;
+     public int download(String id, HttpServletResponse response) throws Exception;
 
     // 선택 삭제 (no)
     // public int deleteFiles(String noList);

@@ -2,11 +2,21 @@ package com.toy.backend.controller;
 
 import com.toy.backend.domain.Files;
 import com.toy.backend.service.FileService;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -15,6 +25,8 @@ import java.util.List;
 public class FileController {
 
     @Autowired private FileService fileService;
+
+    @Autowired ResourceLoader resourceLoader;
 
     @GetMapping()
     public ResponseEntity<?> getAllFile() {
@@ -40,7 +52,7 @@ public class FileController {
     public ResponseEntity<?> createFile(@RequestBody Files file) {
         try {
             boolean result = fileService.insert(file);
-            if(result) {
+            if (result) {
                 return new ResponseEntity<>("SUCCESS", HttpStatus.CREATED);
             } else {
                 return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
@@ -54,7 +66,7 @@ public class FileController {
     public ResponseEntity<?> updateFile(@RequestBody Files file) {
         try {
             boolean result = fileService.updateById(file);
-            if(result) {
+            if (result) {
                 return new ResponseEntity<>("SUCCESS", HttpStatus.CREATED);
             } else {
                 return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
@@ -68,7 +80,7 @@ public class FileController {
     public ResponseEntity<?> destroyFile(@PathVariable("id") String id) {
         try {
             boolean result = fileService.deleteById(id);
-            if(result) {
+            if (result) {
                 return new ResponseEntity<>("SUCCESS", HttpStatus.CREATED);
             } else {
                 return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
@@ -84,21 +96,77 @@ public class FileController {
        파일 선택 삭제 (input 형식)
        @param noList : { "noList" : [1, 2, 3] }
        @param noList : ?noList=1, 2, 3  -> 바디로 전달이 되는지 확인
+
        @param idList : { "idList" : ['id1', 'id2', 'id3'] }
        @param idList : idList='id1', 'id2', 'id3' -> 쿼리 스트링으로 전달이 되는지 확인
        @return
      */
 
     @DeleteMapping("")
-    public ResponseEntity<?> deleteFiles(
-        @RequestParam("noList") List<Long> noList,
-        @RequestParam("idList") List<String> idList
-    ) {
+    public ResponseEntity<?> deleteFiles(@RequestParam("noList") List<Long> noList, @RequestParam("idList") List<String> idList) {
         log.info("noList[] : " + noList);
         log.info("idList[] : " + idList);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     /* 파일 다운로드
-     */
+       @param id
+       @param response
+       @throws Exception
+    */
+    @GetMapping("/download/{id}")
+    public void fileDownload(@PathVariable("id") String id, HttpServletResponse response) throws Exception {
+        fileService.download(id, response);
+    }
+
+    /*
+      썸네일 이미지
+      @param id
+      @throws IOException
+    */
+    @GetMapping("/img/{id}")
+    public void thumbnailImg
+        (
+                @PathVariable("id") String id,
+                HttpServletResponse response
+        ) throws IOException {
+        Files file = fileService.selectById(id); // 파일의 id를 조회
+
+        String filePath = file != null ? file.getFilePath() : null;
+
+        // File imgFile = new File(filePath); 초기 작성 코드
+        File imgFile;
+
+        Resource resource = resourceLoader.getResource("classpath:static/img/no-image.png");
+
+
+        // 파일 경로가 null 또는 파일이 존재하지 않는 경우
+        //  if (filePath == null || !imgFile.exists()) {  초기 작성 코드
+        if ( filePath == null || !(imgFile = new File(filePath) ).exists() ) {
+            // filePath가 null이거나, 해당 경로에 파일이 존재하지 않으면 기본 이미지(no-image.png) 적용
+
+            // no-image.png 적용
+            imgFile = resource.getFile();
+            filePath = imgFile.getPath();
+        }
+
+        // 확장자
+        String ext = filePath.substring(filePath.lastIndexOf(".") + 1);
+        String mimeType = MimeTypeUtils.parseMimeType("image/" + ext).toString();
+        log.info("mimeType: " + mimeType);
+        MediaType mediaType = MediaType.valueOf(mimeType);
+
+        if( mediaType == null ) {
+            // 이미지 타입이 아닌 경우
+            response.setContentType(MediaType.IMAGE_PNG_VALUE);
+            imgFile = resource.getFile();
+        } else {
+            // 이미지 타입인 경우
+            response.setContentType(mediaType.toString());
+        }
+        // 이미지 응답 받기 (입력 받기)
+        FileInputStream fis = new FileInputStream(imgFile);
+        ServletOutputStream sos = response.getOutputStream();
+        FileCopyUtils.copy(fis, sos);
+    }
 }

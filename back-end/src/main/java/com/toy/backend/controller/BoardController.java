@@ -71,12 +71,12 @@ public class BoardController {
 
     @GetMapping("/{id}")
      public ResponseEntity<?> getOneBoard(
-             @PathVariable("id") String id,
-             Files file
+             @PathVariable("id") String id
     ) {
         try {
             Boards board = boardService.selectById(id);
             // 파일 목록 조회
+            Files file = new Files();
             file.setPTable("boards");
             file.setPNo(board.getNo());
             List<Files> fileList = fileService.listByParent(file);
