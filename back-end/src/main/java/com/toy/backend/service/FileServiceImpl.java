@@ -58,6 +58,7 @@ public class FileServiceImpl implements FileService {
     }
 
    /* 초기 작성 코드 (delete, deleteById)
+   - 해당 코드는 메퍼 인터페이스랑 연결만 해둔 상태
         @Override
         public boolean delete(Long no) {
             return fileMapper.delete(no) > 0;
@@ -145,7 +146,7 @@ public class FileServiceImpl implements FileService {
         }
 
         // 1. FS (File System)에 등록 [파일 복사]
-        /*
+         /*
             - 파일 정보 : 원본파일명, 파일 용량, 파일 데이터
                         파일명, 파일경로
          */
@@ -218,5 +219,88 @@ public class FileServiceImpl implements FileService {
         sos.close();
 
         return result;
+    }
+
+    /* 파일 선택 삭제 (no 값을 기준으로 삭제) : 서비스단 실제 구현체에서 삭제 처리 방법1
+        @Override
+        public boolean deleteFiles(List<Long> noList) {
+            if( noList == null ) return false;
+
+            // 1. 파일 삭제
+            for( Long no : noList ) {
+                Files file = select(no);
+                delete(file);
+                log.info("deleteFiles -> delete(file) : " + file);
+            }
+            // 2. 파일 데이터 삭제
+            String nos = "";    // 1, 2, 3 -> output 형식
+            for(int i = 0; i < noList.size(); i++) {
+
+                // nos += (noList.get(i) + ""); // 기존 코드 (초기)
+                // nos += (noList.get(i).toString()); 기존 코드(변형) - 1 : 굳이 괄호로 안 묶어도 변환처리가 된다길래 아래 코드로 변경
+                // nos += noList.get(i).toString(); 기존 코드(변형) - 2 : 여기선 타입이 Long이라 문자열로 변환시켜줘야 해서 toString() 메소드가 필요
+
+                nos += noList.get(i).toString();
+                if( i != noList.size() - 1 )
+                    nos += ",";
+            }
+            log.info("deleteFiles -> nos : " + nos);
+            return fileMapper.deleteFiles(nos) > 0;
+        }
+    */
+
+    // 파일 선택 삭제 : FileMapper.xml -> Mybatis의 <foreach>로 삭제 처리 하는 방법2 (구분자 처리 포함)
+    @Override
+    public boolean deleteFiles(List<Long> noList) {
+        if( noList == null ) return false;
+
+        // 1. 파일 삭제
+        for( Long no : noList ) {
+            Files file = select(no);
+            delete(file);
+            log.info("deleteFiles -> delete(file) : " + file);
+        }
+
+        // 2. 파일 데이터 삭제
+        return fileMapper.deleteFileList(noList) > 0;
+    }
+
+    /* 파일 삭제 (id 값을 기준으로 삭제) : 서비스단 실제 구현체에서 삭제 처리 방법1
+    @Override
+    public boolean deleteFilesById(List<String> idList) {
+        if( idList == null ) return false;
+
+        // 1. 파일 삭제
+        for( String id : idList ) {
+            Files file = selectById(id);
+            delete(file);
+            log.info("deleteFilesById -> delete(file) : " + file);
+        }
+        // 2. 파일 데이터 삭제
+        String ids = "";    // 'id1', 'id2', 'id3' <- output 형식
+        for(int i = 0; i < idList.size(); i++) {
+            // ids += idList.get(i); -> 이전 코드 (여기서는 타입이 String이기 때문에 toString() 필요없음)
+            ids += ("'" + idList.get(i) + "'"); // 문자열로 정리가 되어야 해서 묶을 수 있도록 따옴표(구분자)를 추가
+            if(i != idList.size() - 1)
+                ids += ",";
+        }
+        log.info("deleteFilesById -> ids : " + ids);
+        return fileMapper.deleteFilesById(ids) > 0;
+    }
+    */
+
+    // 파일 삭제 : FileMapper.xml -> Mybatis의 <foreach>로 삭제 처리 하는 방법2 (구분자 처리 포함)
+    @Override
+    public boolean deleteFilesById(List<String> idList) {
+        if( idList == null ) return false;
+
+        // 1. 파일 삭제
+        for( String id : idList ) {
+            Files file = selectById(id);
+            delete(file);
+            log.info("deleteFileListById -> delete(file) : " + file);
+        }
+        // 2. 파일 데이터 삭제
+        return fileMapper.deleteFileListById(idList) > 0;
     }
 }

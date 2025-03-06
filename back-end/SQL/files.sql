@@ -9,7 +9,7 @@ CREATE TYPE file_type AS ENUM ('MAIN', 'SUB');
 
 -- 테이블 생성
 CREATE TABLE files (
-    no BIGSERIAL PRIMARY KEY,           -- 자동 증가 (BIGSERIAL)
+    no BIGSERIAL PRIMARY KEY,            -- 자동 증가 (BIGSERIAL)
     id VARCHAR(64) NOT NULL,             -- 문자열로 처리 (원하는 경우 UUID로 변경 가능)
     p_table VARCHAR(100) NOT NULL,       -- 부모테이블
     p_no BIGINT NOT NULL,                -- 부모 PK
@@ -40,3 +40,16 @@ COMMENT ON COLUMN files.updated_at IS '수정일자';
 
 select * from boards;
 select * from files;
+
+-- no로 조회
+select *
+from files
+where no in (35, 36, 37);
+
+-- id로 조회
+select *
+from files
+where id in
+( '80a9f2fa-635d-4196-a551-0b40f3140257',
+  '97e18417-145f-433a-9e00-83cc302a14b5'
+);

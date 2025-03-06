@@ -179,20 +179,54 @@
              $로 변수명을 적어주면 값을 묶지 않고 그대로 보낸다.
          -->
 
-        <!-- 선택 삭제 - no
-            input 형식 : no IN (1, 2, 3)
+        <!-- 선택 삭제 - no로 값을 받는 경우
+             input 형식 : no IN (1, 2, 3)
         -->
         <delete id="deleteFiles">
             DELETE FROM files
             WHERE no IN ( ${no} )
         </delete>
 
-        <!-- 선택 삭제 - id
-            input 형식 : id IN ('ID1', 'ID2', 'ID3')
+        <!-- 선택 삭제 - id로 값을 받는 경우
+             input 형식 : id IN ('ID1', 'ID2', 'ID3')
         -->
         <delete id="deleteFilesById">
             DELETE FROM files
             WHERE id IN ( ${id} )
         </delete>
 
+        <!-- 선택 삭제 - no로 값을 받는 경우
+             input 형식 : no IN (1, 2, 3)
+        -->
+        <delete id="deleteFileList">
+            DELETE FROM files
+            WHERE no IN
+            <!--
+               - [Mybatis 문법 : foreach]
+
+                 [코드 해석]
+                 컬렉션 속성에 noList, item 속성에 no 요소를 open="(" 속성으로
+                 괄호를 열고 separator로 구분자(",")를 주고 close=")" 속성으로
+                 괄호를 닫아주는 동작 반복하는 코드
+
+                 [Mybatis의 반복 처리 기능]
+                 <foreach collection="noList" item="no" open="(" separator="," close=")">
+                    #{no}  <- 여기서 item 속성에 no 컬럼과 매핑 처리
+                </foreach>
+            -->
+            <foreach collection="noList" item="no" open="(" separator="," close=")">
+                #{no}
+            </foreach>
+        </delete>
+
+        <!-- 선택 삭제 - id로 값을 받는 경우
+             input 형식 : id IN ('ID1', 'ID2', 'ID3')
+        -->
+        <delete id="deleteFileListById">
+            DELETE FROM files
+            WHERE id IN
+            <foreach collection="idList" item="id" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </delete>
 </mapper>

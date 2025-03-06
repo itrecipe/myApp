@@ -2,7 +2,7 @@ package com.toy.backend.domain;
 
 import lombok.Data;
 
-/**
+/*
  [페이징]
 
  * 1. 페이지 필수 정보

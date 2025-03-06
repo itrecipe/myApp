@@ -9,6 +9,7 @@ const BoardInsertForm = ({ onInsert }) => {
   const [title, setTitle] = useState("");
   const [writer, setWriter] = useState("");
   const [content, setContent] = useState("");
+  const [files, setFiles] = useState(null); // files state 추가
 
   // change에 대한 이벤트 함수 등록
   const changeTitle = (e) => {
@@ -19,6 +20,11 @@ const BoardInsertForm = ({ onInsert }) => {
   };
   const changeContent = (e) => {
     setContent(e.target.value);
+  };
+
+  // 파일 변경 이벤트 핸들러 추가
+  const changeFile = (e) => {
+    setFiles(e.target.files);
   };
 
   /* 등록 버튼을 누를때 내려 받은 onInsert를 호출하며
@@ -36,21 +42,60 @@ const BoardInsertForm = ({ onInsert }) => {
       결과: 필수 입력값을 채우지 않으면 alert 창이 뜨고, 등록이 방지됨
 
        [기존 문제 발생 코드]
+
        const onSubmit = () => {
         Swal.alert("빈칸 없이 모두 입력 해주세요!");
         }
         onInsert(title, writer, content)
         }
 
-        -> 문제를 개선한 코드는 아래 onSubmit() 참조
-    
+        -> 문제를 개선한 코드는 아래 onSubmit() 코드 참조
+          const onSubmit = () => {
+          if (!title || !writer || !content) {
+            Swal.alert("빈칸 없이 모두 입력 해주세요!");
+            return;
+          }
+          onInsert(title, writer, content);
+        };
     */
+
   const onSubmit = () => {
+    /* Content-Type : application/json 기존 방식에서 
+      파일기능(업로드, 다운로드, 삭제, 조회 등...)과
+      연결을 위해 multiform-data 형식으로 변경해야함
+
+      onInsert(title, writer, content);
+    */
+
+    /* 파일 업로드
+       application/json 방식 -> multipart/form-data 구조 변경
+     */
+    const formData = new FormData();
+    // 게시글 정보 세팅
+    formData.append("title", title);
+    formData.append("writer", writer);
+    formData.append("content", content);
+
+    // 파일 데이터 세팅
+    if (files) {
+      // 파일 체크
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        formData.append("files", file);
+      }
+    }
+
+    // 헤더
+    const headers = {
+      "Content-Type": "multipart/form-data",
+    };
+    
     if (!title || !writer || !content) {
       Swal.alert("빈칸 없이 모두 입력 해주세요!");
       return;
     }
-    onInsert(title, writer, content);
+    // onInsert(title, writer, content) -> application/json (기존 게시판에서 쓰던 방식)
+    onInsert(formData, headers); // multipart/form-data로 구조변경
   };
 
   return (
@@ -101,6 +146,12 @@ const BoardInsertForm = ({ onInsert }) => {
               onChange={changeContent}
               className={styles["form-input"]}
             ></textarea>
+          </td>
+        </tr>
+        <tr>
+          <td>파일</td>
+          <td>
+            <input type="file" multiple />
           </td>
         </tr>
       </table>

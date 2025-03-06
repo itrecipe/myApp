@@ -119,7 +119,8 @@ public class BoardServiceImpl implements BoardService {
         @param entity
         @return
      */
-   /* public int upload(Boards entity) {
+
+    /* public int upload(Boards entity) {
         int result = 0;
         String pTable = "boards";
         Long pNo = entity.getNo();
@@ -202,7 +203,7 @@ public class BoardServiceImpl implements BoardService {
         file.setPTable("boards");
         file.setPNo(no);
         int deletedCount = fileService.deleteByParent(file);
-        log.info(deletedCount + "개의 파일이 삭제 되었습니다.");
+        log.info(deletedCount + "건의 파일이 삭제 되었습니다.");
         return result;
     }
 

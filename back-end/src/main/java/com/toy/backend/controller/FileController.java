@@ -102,11 +102,65 @@ public class FileController {
        @return
      */
 
+    /* 파일 삭제 초기 코드 (value 값 넘기기 전)
+        - 해당 코드는 idList, noList 값을 둘다 한번에 넘겨야 하는 방식이며, (id, no) 값 각각 처리 불가
+
+        @DeleteMapping("")
+        public ResponseEntity<?> deleteFiles(@RequestParam("noList") List<Long> noList, @RequestParam("idList") List<String> idList) {
+            log.info("deleteFiles 메소드 -> noList[] : " + noList);
+            log.info("deleteFiles 메소드 -> idList[] : " + idList);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+    */
+
+    // 파일 삭제시 idList만 받을지 noList만 받을지 각각 처리할 수 있도록 로직 변경1
+    /*
+        @DeleteMapping("")
+        public ResponseEntity<?> deleteFiles(
+                @RequestParam (value = "noList", required = false) List<Long> noList,
+                @RequestParam (value = "idList", required = false)  List<String> idList
+        ) {
+            log.info("deleteFiles 메소드 -> noList[] : " + noList);
+            log.info("deleteFiles 메소드 -> idList[] : " + idList);
+
+            boolean result = false;
+
+            // idList & noList null 값 체크
+            if( noList != null ) {
+                result = fileService.deleteFiles(noList);
+            }
+            if ( idList != null ) {
+                result = fileService.deleteFilesById(idList);
+            }
+            if (result) {
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    */
+
+    // 파일 삭제시 idList만 받을지 noList만 받을지 각각 처리할 수 있도록 로직 변경2
     @DeleteMapping("")
-    public ResponseEntity<?> deleteFiles(@RequestParam("noList") List<Long> noList, @RequestParam("idList") List<String> idList) {
-        log.info("noList[] : " + noList);
-        log.info("idList[] : " + idList);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<?> deleteFiles(
+            @RequestParam (value = "noList", required = false) List<Long> noList,
+            @RequestParam (value = "idList", required = false)  List<String> idList
+    ) {
+        log.info("deleteFiles 메소드 -> noList[] : " + noList);
+        log.info("deleteFiles 메소드 -> idList[] : " + idList);
+
+        boolean result = false;
+
+        // idList & noList null 값 체크
+        if( noList != null ) {
+            result = fileService.deleteFiles(noList);
+        }
+        if ( idList != null ) {
+            result = fileService.deleteFilesById(idList);
+        }
+        if (result) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     /* 파일 다운로드
@@ -139,9 +193,8 @@ public class FileController {
 
         Resource resource = resourceLoader.getResource("classpath:static/img/no-image.png");
 
-
         // 파일 경로가 null 또는 파일이 존재하지 않는 경우
-        //  if (filePath == null || !imgFile.exists()) {  초기 작성 코드
+        // if (filePath == null || !imgFile.exists()) {  초기 작성 코드
         if ( filePath == null || !(imgFile = new File(filePath) ).exists() ) {
             // filePath가 null이거나, 해당 경로에 파일이 존재하지 않으면 기본 이미지(no-image.png) 적용
 
