@@ -8,7 +8,7 @@ export const formatDate = (dateString) => {
     const date = new Date(dateString) 
 
     // 3. 옵션 셋팅 
-    // (1번째 방법 : 포맷 option으로 날짜 형식 지정하기)
+    // - 1번째 방법 : 포맷 option으로 날짜 형식 지정하기
     /*
         const options = {
             year: 'numeric', month: 'numeric', day: 'numeric', 
@@ -27,4 +27,27 @@ export const formatDate = (dateString) => {
     const seconds = String(date.getSeconds()).padStart(2, '0');
 
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
+export const byteToUnit = (byte) => {
+    // 파일 용량 별로 곱해줄 값을 unitMultiple 함수에 정의
+    const unitMultiple = {
+        "B" : 1,
+        "KB" : 1024,
+        "MB" : 1024 * 1024,
+        "GB" : 1024 * 1024 * 1024,
+        "TB" : 1024 * 1024 * 1024 * 1024
+    }
+    // 파일의 단위를 정의
+    let unit = ""
+    for( const key in unitMultiple ) {
+        if( byte >= unitMultiple[key] ) {
+            unit = key
+        }
+    }
+
+    /* 파일 단위 환산
+       ex) 2048 byte -> 2.xx KB
+    */
+    return parseFloat( byte / unitMultiple[unit]).toFixed(2) + " " + unit
 }

@@ -70,3 +70,9 @@
     gap: 20px;
   }
 
+  .file-img {
+    width: 140px;
+    height: 78px;
+    object-fit: cover;
+  }
+

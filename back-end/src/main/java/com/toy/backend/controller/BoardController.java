@@ -89,7 +89,7 @@ public class BoardController {
         }
     }
 
-    /* 초기 작성 코드 createBoard (파일 업로드 적용 전 게시판에 사용하던 로직)
+    /* 초기 작성 코드 createBoard (파일 관련 기능 적용 전 게시판에 사용하던 로직)
         @PostMapping()
         public ResponseEntity<?> createBoard(@RequestBody Boards board) {
             try {
@@ -111,7 +111,8 @@ public class BoardController {
      */
     @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> createBoardFormData(Boards board) {
-        log.info("게시글 등록 - multipart/form-data");
+        log.info("게시글 및 파일 등록 - multipart/form-data");
+        log.info("createBoardFormData -> board가 잘 넘어오는지 확인 : " + board);
         try {
             boolean result = boardService.insert(board);
             if( result ) {

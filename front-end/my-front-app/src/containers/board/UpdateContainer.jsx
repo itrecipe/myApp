@@ -15,9 +15,11 @@ const UpdateContainer = () => {
 
   // state 셋팅
   const [board, setBoard] = useState({}) // 기본값 빈 객체 {}
+  const [fileList, setFileList] = useState([])
 
-    // 게시글 데이터 요청 (디버깅 코드 추가)
-    const getBoard = async () => {
+    
+/* 게시글 데이터 요청 (디버깅 코드 추가) - 이전 게시판 코드
+   const getBoard = async () => {
       try {
         const response = await boards.select(id);
         console.log('update_response: ', response);
@@ -25,13 +27,35 @@ const UpdateContainer = () => {
         const data = await response.data;
         console.log('update_data: ', data)
         
-        setBoard(data);
+        // setBoard(data); 이전 게시글 코드
+        setBoard(data.board); 
+        // 파일 데이터와 게시글의 응답을 같이 받기 위해 구조 변경
         
       } catch (error) {
         console.error("update_error: ", error);
         // 필요 시 사용자에게 오류 메시지 표시
       }
-    };
+    }; */
+
+     const getBoard = async () => {
+        try {
+          const response = await boards.select(id);
+          console.log("read_response: ", response);
+    
+          const data = await response.data;   // data 구조 => Board + fileLIst가 같이 오는 구조
+          console.log("read_data: ", data);
+    
+          setBoard(data.board);
+          
+          setFileList(data.fileList);
+          console.log("data.fileList 확인 : ", data.fileList);
+    
+        } catch (error) {
+          console.error("read_error: ", error);
+          // 필요 시 사용자에게 오류 메시지 표시
+        }
+      };
+    
 
   // 게시글 수정 요청 이벤트 헨들러 생성
   const onUpdate = async (id, title, writer, content) => {
@@ -75,7 +99,7 @@ const UpdateContainer = () => {
   return (
     <>
       <div>UpdateContainer</div>
-      <BoardUpdateForm board={board} onUpdate={onUpdate} onDelete={onDelete} />
+      <BoardUpdateForm board={board} fileList={fileList} onUpdate={onUpdate} onDelete={onDelete} />
     </>
   );
 };

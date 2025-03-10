@@ -6,8 +6,50 @@
 <!-- namespace="매퍼 인터페이스 경로" -->
 <mapper namespace="com.toy.backend.mapper.BoardMapper">
 
+    <resultMap type="Boards" id="boardMap">
+        <id property="no" column="no"/>
+        <result property="no" column="no"/>
+        <result property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="writer" column="writer"/>
+        <result property="content" column="content"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+
+        <association property="file" column="no" javaType="Files" select="selectMainFile"></association>
+
+    </resultMap>
+
     <!-- 게시글 리스트 조회 (전체 - 생성일 기준 내림차순) -->
-    <select id="list" resultType="Boards">
+
+    <!-- 이전 게시글 리스트 조회 코드
+        <select id="list" resultType="Boards">
+            SELECT *
+            FROM boards
+            ORDER BY created_at DESC
+        </select>
+    -->
+
+    <!--
+
+
+        [트러블 슈팅]
+        * 문제 상황 : boardMap 클래스를 찾을 수 없음
+
+        [에러 코드]
+        Caused by: org.apache.ibatis.builder.BuilderException: Error resolving class.
+        Cause: org.apache.ibatis.type.TypeException: Could not resolve type alias 'boardMap'.
+        Cause: java.lang.ClassNotFoundException: Cannot find class: boardMap
+
+        * 원인 분석 : boardMap은 자바 클래스가 아닌 XML에서 정의한 resultMap의 id값을 의미하는데
+        아래 select 태그에서 resultType으로 지정했기 때문에 java의 클래스 타입을 찾으려고 하는 문제가 발생
+
+        * 해결 방법 : <select id="list" resultType="boardMap">
+                    데이터 매핑을 할때 반환 타입이 resultMap으로 지정되었기 때문에
+                    resultType이 아닌 resultMap으로 지정하여 boardMap를 찾아주면 해결 된다.
+    -->
+
+    <select id="list" resultMap="boardMap">
         SELECT *
         FROM boards
         ORDER BY created_at DESC
@@ -43,7 +85,6 @@
         VALUES( #{id}, #{title}, #{writer}, #{content} )
     </insert>
 
-
     <!-- 게시글 수정 -->
     <update id="update">
         UPDATE boards
@@ -57,7 +98,7 @@
             <if test="content != null">
                 content = #{content},
             </if>
-                updated_at = now()
+            updated_at = now()
         </set>
         WHERE no = #{no}
     </update>
@@ -93,5 +134,14 @@
         FROM boards
         WHERE id = #{id}
     </delete>
+
+    <!-- 메인 파일 정보 조회 (메인 화면 썸네일 이미지 조회)  -->
+    <select id="selectMainFile" resultType="Files">
+        SELECT *
+        FROM Files
+        WHERE p_no = #{no}
+        AND p_table = 'boards'
+        AND type = 'MAIN'
+    </select>
 
 </mapper>

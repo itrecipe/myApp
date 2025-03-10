@@ -9,6 +9,7 @@ const BoardInsertForm = ({ onInsert }) => {
   const [title, setTitle] = useState("");
   const [writer, setWriter] = useState("");
   const [content, setContent] = useState("");
+  const [mainFile, setMainFile] = useState(null); // mainfile state 추가
   const [files, setFiles] = useState(null); // files state 추가
 
   // change에 대한 이벤트 함수 등록
@@ -23,23 +24,29 @@ const BoardInsertForm = ({ onInsert }) => {
   };
 
   // 파일 변경 이벤트 핸들러 추가
+  const changeMainFile = (e) => {
+    // files : []  -> 리스트 형식
+    setMainFile(e.target.files[0]);
+  };
+
   const changeFile = (e) => {
     setFiles(e.target.files);
   };
+
 
   /* 등록 버튼을 누를때 내려 받은 onInsert를 호출하며
      state(title, writer, content)를 전달하기
 
       [트러블 슈팅]
       
-      문제 상황 : 제목(title), 작성자(writer), 내용(content)이
-                비어 있어도 게시글이 등록되는 문제 발생
+      * 문제 상황 : 제목(title), 작성자(writer), 내용(content)이
+                   비어 있어도 게시글이 등록되는 문제 발생
 
-      원인 분석: 입력값 검증 없이 onInsert 함수가 실행됨
+      * 원인 분석: 입력값 검증 없이 onInsert 함수가 실행됨
 
-      해결 방법: if 조건문을 추가하여 모든 필드가 입력된 경우에만 등록이 가능하도록 수정
+      * 해결 방법: if 조건문을 추가하여 모든 필드가 입력된 경우에만 등록이 가능하도록 수정
       
-      결과: 필수 입력값을 채우지 않으면 alert 창이 뜨고, 등록이 방지됨
+      * 결과: 필수 입력값을 채우지 않으면 alert 창이 뜨고, 등록이 방지됨
 
        [기존 문제 발생 코드]
 
@@ -61,8 +68,8 @@ const BoardInsertForm = ({ onInsert }) => {
 
   const onSubmit = () => {
     /* Content-Type : application/json 기존 방식에서 
-      파일기능(업로드, 다운로드, 삭제, 조회 등...)과
-      연결을 위해 multiform-data 형식으로 변경해야함
+      파일 기능(업로드, 다운로드, 삭제, 조회 등...)
+      연결을 위해 multiform-data 형식으로 변경해야 한다.
 
       onInsert(title, writer, content);
     */
@@ -71,12 +78,16 @@ const BoardInsertForm = ({ onInsert }) => {
        application/json 방식 -> multipart/form-data 구조 변경
      */
     const formData = new FormData();
+    
     // 게시글 정보 세팅
     formData.append("title", title);
     formData.append("writer", writer);
     formData.append("content", content);
 
     // 파일 데이터 세팅
+    if ( mainFile ) {
+      formData.append('mainFile', mainFile)
+    }
     if (files) {
       // 파일 체크
       for (let i = 0; i < files.length; i++) {
@@ -89,13 +100,13 @@ const BoardInsertForm = ({ onInsert }) => {
     const headers = {
       "Content-Type": "multipart/form-data",
     };
-    
+
     if (!title || !writer || !content) {
       Swal.alert("빈칸 없이 모두 입력 해주세요!");
       return;
     }
     // onInsert(title, writer, content) -> application/json (기존 게시판에서 쓰던 방식)
-    onInsert(formData, headers); // multipart/form-data로 구조변경
+    onInsert(formData, headers);        // multipart/form-data로 구조변경
   };
 
   return (
@@ -111,7 +122,8 @@ const BoardInsertForm = ({ onInsert }) => {
           <th>제목</th>
           <td>
             {/* <input type="text" onChange={changeTitle} className='form-input' /> 
-                CSS module 적용 전 코드*/}
+                - CSS module 적용 전 코드
+            */}
             {/* 
                 CSS modules의 클래스 선택자는 카멜케이스로 쓰는 것이 관례
                                   CSS         JavaScript
@@ -149,9 +161,15 @@ const BoardInsertForm = ({ onInsert }) => {
           </td>
         </tr>
         <tr>
-          <td>파일</td>
+          <td>메인 파일</td>
           <td>
-            <input type="file" multiple />
+            <input type="file" onChange={changeMainFile} />
+          </td>
+        </tr>
+        <tr>
+          <td>서브 파일</td>
+          <td>
+            <input type="file" multiple onChange={changeFile} />
           </td>
         </tr>
       </table>

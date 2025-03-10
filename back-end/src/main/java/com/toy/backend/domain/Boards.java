@@ -25,6 +25,7 @@ public class Boards {
     private List<MultipartFile> files;
 
     // 파일 정보
+    Files file;
 
     // UUID 생성할 기본 생성자
     public Boards() {

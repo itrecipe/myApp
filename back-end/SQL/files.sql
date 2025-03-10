@@ -38,6 +38,8 @@ COMMENT ON COLUMN files.seq IS '순서';
 COMMENT ON COLUMN files.created_at IS '등록일자';
 COMMENT ON COLUMN files.updated_at IS '수정일자';
 
+truncate table files;
+
 select * from boards;
 select * from files;
 
