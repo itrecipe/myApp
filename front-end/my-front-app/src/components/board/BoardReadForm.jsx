@@ -78,7 +78,7 @@ const BoardReadForm = ({ board, fileList, onDownload }) => {
                     </div>
                     <div className="item">
                       {/* <button className="btn">Download</button> 게시판 이전 코드 */}
-                      <button className="btn" onClick={ () => onDownload(file.no, file.originName) }>Download</button>
+                      <button className="btn" onClick={ () => onDownload( file.id, file.originName ) }>Download</button>
                       {/* onClick={ () => onDownload(file.no, file.originName) }
                           매개변수가 있을때 함수 호출 구조가 아닌 정의구조로 작성해야 한다. 
                       */}

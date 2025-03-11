@@ -188,9 +188,11 @@ public class FileServiceImpl implements FileService {
     public int download(String id, HttpServletResponse response) throws Exception {
         Files file = fileMapper.selectById(id); // 파일을 먼저 조회하기
 
+        log.info("download -> file, id 확인 : " + file + " : " + id);
+        
         // 파일이 없을 경우 응답 상태 반환
-        if (file == null) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        if ( file == null ) {
+            response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
             return 0;
         }
 

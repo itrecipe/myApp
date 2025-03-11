@@ -172,7 +172,6 @@ public class FileController {
     public void fileDownload(@PathVariable("id") String id, HttpServletResponse response) throws Exception {
         fileService.download(id, response);
         log.info("fileService.download 잘 타는지확인 : " + id, response);
-//        return "test";
     }
 
     /*

@@ -2,14 +2,21 @@ import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import styles from "./css/BoardUpdateForm.module.css";
 import * as Swal from "../../apis/alert";
+import * as format from "../../utils/format.js";
+import DownloadIcon from '@mui/icons-material/Download';
+import DeleteIcon from '@mui/icons-material/Delete';
 
-const BoardUpdateForm = ({ board, onUpdate, onDelete }) => {
-  const { id } = useParams();
+const BoardUpdateForm = ({ 
+    board, onUpdate, onDelete, onDeleteFile, fileList, onDownload, deleteCheckedFiles
+  }) => {
+  
+    const { id } = useParams();
 
   // state 선언
   const [title, setTitle] = useState("");
   const [writer, setWriter] = useState("");
   const [content, setContent] = useState("");
+  const [fileIdList, setFileIdList] = useState([]); // 선택 삭제 id 목록
 
   // change에 대한 이벤트 함수 등록
   const changeTitle = (e) => {
@@ -57,11 +64,16 @@ const BoardUpdateForm = ({ board, onUpdate, onDelete }) => {
       Swal.alert("모든 입력란을 채워 주세요!");
       return; // 위 조건 만족시 return해서 업데이트 진행이 되지 않도록 처리
     }
-    Swal.confirm("수정 할까요?", "확인 또는 취소 버튼을 눌러 주세요!", "warning", (result) => {
-      if (result.isConfirmed) {
-        onUpdate(id, title, writer, content);
+    Swal.confirm(
+      "수정 할까요?",
+      "확인 또는 취소 버튼을 눌러 주세요!",
+      "warning",
+      (result) => {
+        if (result.isConfirmed) {
+          onUpdate(id, title, writer, content);
+        }
       }
-    });
+    );
   };
 
   /* 
@@ -80,14 +92,76 @@ const BoardUpdateForm = ({ board, onUpdate, onDelete }) => {
     -> 문제를 개선한 코드는 아래 handleDelete 함수 참조
     */
 
-  // 삭제 이벤트 핸들러 - 2 (개선 완료)
+  // 게시글 삭제 이벤트 핸들러 - 2 (개선 완료)
   const handleDelete = () => {
-    Swal.confirm("정말 삭제 할까요?", "신중하게 결정 했나요?", "warning", (result) => {
-      if (result.isConfirmed) {
-        onDelete(id);
+    Swal.confirm(
+      "정말 삭제 할까요?",
+      "신중하게 결정 했나요?",
+      "warning",
+      (result) => {
+        if (result.isConfirmed) {
+          onDelete(id);
+        }
       }
-    });
+    );
   };
+
+  // 파일 삭제 이벤트 핸들러
+  const handleFileDelete = (id) => {
+    Swal.confirm(
+      "파일 삭제 할까요?",
+      "신중하게 결정 했나요?",
+      "warning",
+      (result) => {
+        if (result.isConfirmed) {
+          onDeleteFile(id);
+        }
+      }
+    );
+  }
+
+  const handleCheckedFileDelete = (id) => {
+    Swal.confirm(
+      `선택한 ${fileIdList.length} 개 파일들 삭제 할까요?`,
+      "신중하게 결정 했나요?",
+      "warning",
+      (result) => {
+        if (result.isConfirmed) {
+          deleteCheckedFiles(fileIdList);
+          setFileIdList([]) // 삭제할 id 리스트 초기화
+        }
+      }
+    );
+  }
+
+  // 체크박스 클릭 이벤트 핸들러
+  const checkFileId = (id) => {
+    console.log(`checkFileId() -> id값 확인 : ${id}`)
+
+    let checked = false
+
+    // 체크 여부 확인
+    for (let i = 0; i < fileIdList.length; i++) {
+      const fileId = fileIdList[i];
+      // 체크 된 것 : 체크박스 해제 -> 제거
+      if( fileId == id) {
+        fileIdList.splice(i, 1) // splice 메서드로 i번째 인덱스의 1개 요소를 제거
+        checked = true
+      }
+    }
+
+    // 체크가 안된것 : 체크박스를 지정
+    if( !checked ) {
+      // 체크한 아이디 추가
+      fileIdList.push(id)
+    }
+    console.log(`checkFileId() -> fileIdList -> 체크한 ID값 확인 : ${fileIdList}`)
+
+    setFileIdList(fileIdList)
+    /* 위 작업들이 정리가 좀 되면 setFileIdList(fileIdList)로 정리 해준다 
+       (즉, 체크된 여부가 바뀐다는 의미)
+    */
+  }
 
   /* BoardUpdateForm이 마운트될 때,
    board 객체가 존재하면 해당 객체의 title, writer, content 값을
@@ -146,15 +220,63 @@ const BoardUpdateForm = ({ board, onUpdate, onDelete }) => {
             ></textarea>
           </td>
         </tr>
+        <tr>
+          <td colSpan={2}>
+            {fileList.map( (file) => (
+              <div className="flex-box" key={file.id}>
+                <div className="item">
+
+                  <input type="checkbox" onClick={ () => checkFileId( file.id ) } />
+                
+                  {/* 썸네일 이미지 적용 */}
+                  <img
+                    src={`/api/files/img/${file.id}`}
+                    alt={file.originName}
+                    className="file-img"
+                  />
+                  <span>
+                    {file.originName} ( {format.byteToUnit(file.fileSize)})
+                  </span>
+                </div>
+                <div className="item">
+                  {/* <button className="btn">Download</button> 게시판 이전 코드 */}
+                  {/* <button className="btn" onClick={() => onDownload(file.id, file.originName)}>
+                      Download
+                    </button> 
+                    매트리얼 ui 적용 전 코드 (삭제도 동일)
+                  */}
+                  <button className="btn" onClick={ () => onDownload(file.id, file.originName)}>
+                    <DownloadIcon />
+                  </button>
+                  <button className="btn" onClick={ () => handleFileDelete(file.id) } >
+                    <DeleteIcon />
+                  </button>
+                  {/* onClick={ () => onDownload(file.no, file.originName) }
+                                  매개변수가 있을때 함수 호출 구조가 아닌 정의구조로 작성해야 한다. 
+                              */}
+                </div>
+              </div>
+            ))}
+          </td>
+        </tr>
       </table>
       <div className="btn-box">
         <Link to="/boards" className="btn">
           목록
         </Link>
-        {/* <Link to={`/boards/update/${id}`} className="btn">수정</Link> 이전 코드 */}
+        
+        {/* <button className='btn'>선택 삭제</button> -> 이전 게시글 코드 */}
+        {/* <button className='btn' onClick={ () => deleteCheckedFiles( fileIdList ) }>선택 삭제</button> -> 파일 관련 기능 구현할때 만든 코드*/}
+        <button className='btn' onClick={ handleCheckedFileDelete }>선택 삭제</button>
+
+        {/* <Link to={`/boards/update/${id}`} className="btn">수정</Link> 이전 게시글 코드 */}
         <div>
-          <button onClick={onSubmit} className="btn">수정</button>
-          <button onClick={handleDelete} className="btn">삭제</button>
+          <button onClick={onSubmit} className="btn">
+            수정
+          </button>
+          <button onClick={handleDelete} className="btn">
+            삭제
+          </button>
         </div>
         {/*
          1. Link to={`/boards/update/${id}`} 여기서 id 번호(게시글 번호)를

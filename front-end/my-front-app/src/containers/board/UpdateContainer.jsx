@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import * as boards from "../../apis/boards";
+import * as files from "../../apis/files";
 import BoardUpdateForm from "../../components/board/BoardUpdateForm";
 import * as Swal from "../../apis/alert";
 
@@ -37,6 +38,7 @@ const UpdateContainer = () => {
       }
     }; */
 
+    // 게시글 데이터 요청 (파일 기능 확장)
      const getBoard = async () => {
         try {
           const response = await boards.select(id);
@@ -91,6 +93,69 @@ const UpdateContainer = () => {
     }
   }
 
+   // 파일 다운로드
+    const onDownload = async (id, fileName) => {
+      // API 요청
+      const response = await files.download(id);
+      console.log("onDownload() -> response 확인 : ", response);
+      /* 작업할 내용
+        1. 서버에서 응답받는 파일 데이터를 받아 Blob로 변환
+        2. 브라우저를 통해 a태그로 등록
+        3. a태그의 다운로드 기능으로 요청
+       */
+      const url = window.URL.createObjectURL(new Blob( [response.data] ))
+      // <a href="파일(data)" download="파일명.png">  <- 왼쪽 코드는 a태그 형식으로 만들어 주는 과정
+      const link = document.createElement('a')  // a태그 생성
+      link.href = url
+      link.setAttribute('download', fileName)
+      document.body.appendChild(link)
+      link.click()  // 다운로드 기능을 가진 a태그를 클릭
+      document.body.removeChild(link)
+    }
+
+  // 파일 삭제
+  const onDeleteFile = async (fileId) => {
+      try {
+        // 파일 삭제 요청
+        const fileResponse = await files.remove(fileId)
+        console.log("onDeleteFile -> fileResponse.data 요청 응답 확인 :  ", fileResponse.data);
+
+        // 요청 성공 여부 체크
+
+        // 파일 목록 갱신
+        const boardResponse = await boards.select(id)
+        const data = boardResponse.data
+        const fileList = data.fileList
+        setFileList(fileList)
+
+      } catch (error) {
+        console.log("onDeleteFile 에러 로그 확인 : ", error)
+      }
+  }
+
+  // 파일 선택 삭제 요청
+  const deleteCheckedFiles = async (idList) => {
+    const fileIdList = idList.join(",")
+    console.log('deleteCheckedFiles() -> fileIdList 확인 :', fileIdList);
+    
+    try {
+      // 파일 선택 삭제 요청
+      const response = await files.removeFiles( fileIdList )
+      console.log('deleteCheckedFiles() response.data -> 파일 선택 삭제 요청 응답확인 : ', response.data);
+
+      // 파일 목록 갱신
+      const boardResponse = await boards.select(id)
+      const data = boardResponse.data
+      const fileList = data.fileList
+      setFileList(fileList)
+
+    } catch (error) {
+      console.log('deleteCheckedFiles -> error 로그 확인', error);
+    }
+
+  }
+
+
   useEffect( () => {
     getBoard()
     console.log("getBoard() - update_log", board);
@@ -99,7 +164,15 @@ const UpdateContainer = () => {
   return (
     <>
       <div>UpdateContainer</div>
-      <BoardUpdateForm board={board} fileList={fileList} onUpdate={onUpdate} onDelete={onDelete} />
+      <BoardUpdateForm 
+          board={board} 
+          fileList={fileList} 
+          onUpdate={onUpdate} 
+          onDelete={onDelete}
+          onDeleteFile={onDeleteFile}
+          onDownload={onDownload}
+          deleteCheckedFiles={deleteCheckedFiles}
+        />
     </>
   );
 };

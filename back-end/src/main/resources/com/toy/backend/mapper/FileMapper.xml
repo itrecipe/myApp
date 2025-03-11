@@ -167,7 +167,7 @@
         <delete id="deleteByParent">
             DELETE FROM files
             WHERE
-                p_table = ${pTable}
+                p_table = #{pTable}
             AND p_no = #{pNo}
         </delete>
 
