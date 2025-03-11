@@ -210,8 +210,8 @@ public class BoardServiceImpl implements BoardService {
     // 페이징 (페이지 리스트 출력)
     @Override
     public PageInfo<Boards> list(int page, int size) {
+    	List<Boards> list = boardMapper.list();
         PageHelper.startPage(page,size);
-        List<Boards> list = boardMapper.list();
         PageInfo<Boards> pageInfo = new PageInfo<>(list);
         return pageInfo;
     }

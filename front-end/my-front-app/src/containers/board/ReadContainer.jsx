@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import * as boards from "../../apis/boards";
+import * as files from "../../apis/files";
 import BoardReadForm from "../../components/board/BoardReadForm";
 
 const ReadContainer = () => {
@@ -42,7 +43,21 @@ const ReadContainer = () => {
   // 다운로드
   const onDownload = async (id, fileName) => {
     // API 요청
-
+    const response = await files.download(id);
+    console.log("onDownload() -> response 확인 : ", response);
+    /* 작업할 내용
+      1. 서버에서 응답받는 파일 데이터를 받아 Blob로 변환
+      2. 브라우저를 통해 a태그로 등록
+      3. a태그의 다운로드 기능으로 요청
+     */
+    const url = window.URL.createObjectURL(new Blob( [response.data] ))
+    // <a href="파일(data)" download="파일명.png">  <- 왼쪽 코드는 a태그 형식으로 만들어 주는 과정
+    const link = document.createElement('a')  // a태그 생성
+    link.href = url
+    link.setAttribute('download', fileName)
+    document.body.appendChild(link)
+    link.click()  // 다운로드 기능을 가진 a태그를 클릭
+    document.body.removeChild(link)
   }
 
   useEffect(() => {
@@ -53,7 +68,12 @@ const ReadContainer = () => {
   return (
     <>
       <div>ReadContainer</div>
-      <BoardReadForm board={board} fileList={fileList} />
+      <BoardReadForm 
+            board={board} 
+            fileList={fileList} 
+            onDownload={onDownload}
+      />
+      
       {/* TIP : 상단에 useState로 상태를 정의 했다면 컴포넌트를
           출력하는 return문에 props(매개변수)로 전달받아야
           되기 때문에 내려줘야 한다. 

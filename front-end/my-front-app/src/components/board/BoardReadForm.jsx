@@ -3,7 +3,8 @@ import styles from "./css/BoardReadForm.module.css";
 import * as format from "../../utils/format.js"
 
 // const BoardReadForm = ({ board }) => {  -> 게시글 조회 까지 로직
-const BoardReadForm = ({ board, fileList }) => {
+const BoardReadForm = ({ board, fileList, onDownload }) => {
+
   const { id } = useParams();
 
   // board가 아직 정의되지 않았으면 Loading 메시지 표시
@@ -76,7 +77,11 @@ const BoardReadForm = ({ board, fileList }) => {
                       <span>{file.originName} ( { format.byteToUnit( file.fileSize ) })</span>
                     </div>
                     <div className="item">
-                      <button className="btn">Download</button>
+                      {/* <button className="btn">Download</button> 게시판 이전 코드 */}
+                      <button className="btn" onClick={ () => onDownload(file.no, file.originName) }>Download</button>
+                      {/* onClick={ () => onDownload(file.no, file.originName) }
+                          매개변수가 있을때 함수 호출 구조가 아닌 정의구조로 작성해야 한다. 
+                      */}
                     </div>
                   </div>
                 ))
