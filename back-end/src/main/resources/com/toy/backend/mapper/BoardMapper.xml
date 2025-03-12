@@ -137,11 +137,13 @@
 
     <!-- 메인 파일 정보 조회 (메인 화면 썸네일 이미지 조회)  -->
     <select id="selectMainFile" resultType="Files">
+    /* test */
         SELECT *
         FROM Files
         WHERE p_no = #{no}
-        AND p_table = 'boards'
-        AND type = 'MAIN'
+	        AND p_no = #{no}
+	        AND p_table = 'boards'
+	        AND type = 'MAIN'
     </select>
 
 </mapper>

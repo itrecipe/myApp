@@ -3,7 +3,7 @@ import styles from "./css/BoardReadForm.module.css";
 import * as format from "../../utils/format.js"
 
 // const BoardReadForm = ({ board }) => {  -> 게시글 조회 까지 로직
-const BoardReadForm = ({ board, fileList, onDownload }) => {
+const BoardReadForm = ({ board, mainFile, fileList, onDownload }) => {
 
   const { id } = useParams();
 
@@ -15,6 +15,17 @@ const BoardReadForm = ({ board, fileList, onDownload }) => {
   return (
     <div className="container">
       <h1 className="title">게시글 조회</h1>
+
+      <div>
+        {
+          mainFile
+          ?
+          <img src={`/api/files/img/${mainFile?.id}`} alt={mainFile?.originName} />
+          :
+          <></>
+        }
+      </div>
+
       {/* <h3>id: {id} </h3> */}
       <table className={styles.table}>
         <tbody>

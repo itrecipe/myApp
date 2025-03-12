@@ -31,4 +31,10 @@ public interface FileMapper extends BaseMapper<Files> {
     // 선택 삭제 (id 기준) -> Mybatis의 <foreach> 문법과 속성(기능)들을 사용하여 반복문 돌려서 처리 하는 방법2
     // public int deleteFileListById(List<String> idList); -> 이전 코드
     public int deleteFileListById(@Param("idList") List<String> idList);
+    
+    // 타입별 파일 조회
+    public Files selectByType(Files file);
+    
+    // 타입별 파일 목록
+    public List<Files> listByType(Files file);
 }

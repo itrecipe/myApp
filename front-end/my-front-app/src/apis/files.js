@@ -9,3 +9,6 @@ export const remove = (id) => axios.delete(`/files/${id}`)
 // 파일 선택 삭제
 export const removeFiles = (idList) => axios.delete(`/files?idList=${idList}`)
 // (`/files?idList=${idList}`) idLIist가 컴마로 구분되어 넘어가면 서버측에선 컬렉션 리스트 형태로 전달 받을 수 있다.
+
+// 타입별 파일 목록
+export const fileByType = (pTable, pNo, type) => axios.get(`/files/${pTable}/${pNo}?type=${type}`)

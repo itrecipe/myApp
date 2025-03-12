@@ -50,6 +50,7 @@ public class BoardController {
             // return new ResponseEntity<>(boardList, HttpStatus.OK); // 1. 우선 게시글 목록 전체를 리턴 하기
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
+        	e.printStackTrace();
             log.error("BoardController: getAllBoard API 처리 중 오류 발생");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -85,6 +86,7 @@ public class BoardController {
             response.put("fileList", fileList);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
+        	e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -121,6 +123,7 @@ public class BoardController {
                 return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
+        	e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -136,23 +139,58 @@ public class BoardController {
                 return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
+        	e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @PutMapping()
+    /* 게시판 수정 로직 (기존)
+	    @PutMapping()
+	    public ResponseEntity<?> updateBoard(@RequestBody Boards board) {
+	        try {
+	            boolean result = boardService.updateById(board);
+	            if( result ) {
+	                return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
+	            } else {
+	                return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
+	            }
+	        } catch (Exception e) {
+	
+	            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+	        }
+	    }
+    */
+    
+    // 게시판 파일 관련 기능 적용 후 수정 로직 (MediaType.MULTIPART_FORM_DATA_VALUE - Multipart_form_data 전용)
+    @PutMapping(value= "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> updateBoardForm(Boards board) {	// formdata 방식일때는 @RequestBody 제외
+    	try {
+    		boolean result = boardService.updateById(board);
+    		if( result ) {
+    			return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
+    		} else {
+    			return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
+    		}
+    	} catch (Exception e) {
+    		
+    		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    	}
+    }
+    
+    // 게시판 파일 관련 기능 적용 후 수정 로직 (MediaType.APPLICATION_JSON_VALUE - JSON 전용)
+    @PutMapping(value= "", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateBoard(@RequestBody Boards board) {
-        try {
-            boolean result = boardService.updateById(board);
-            if( result ) {
-                return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
-            }
-        } catch (Exception e) {
-
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    	try {
+    		boolean result = boardService.updateById(board);
+    		if( result ) {
+    			return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
+    		} else {
+    			return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
+    		}
+    	} catch (Exception e) {
+    		
+    		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    	}
     }
 
     @DeleteMapping("/{id}")

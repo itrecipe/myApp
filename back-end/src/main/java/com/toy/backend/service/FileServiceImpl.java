@@ -21,7 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class FileServiceImpl implements FileService {
 
-    @Autowired
+	@Autowired
     FileMapper fileMapper;
 
     @Value("${upload.path}")
@@ -305,4 +305,16 @@ public class FileServiceImpl implements FileService {
         // 2. 파일 데이터 삭제
         return fileMapper.deleteFileListById(idList) > 0;
     }
+    
+    // 타입별 파일 조회
+    @Override
+	public Files selectByType(Files file) {
+		return fileMapper.selectByType(file);
+	}
+
+    // 타입별 목록 조회
+	@Override
+	public List<Files> listByType(Files file) {
+		return fileMapper.listByType(file);
+	}
 }

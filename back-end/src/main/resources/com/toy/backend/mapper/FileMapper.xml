@@ -229,4 +229,23 @@
                 #{id}
             </foreach>
         </delete>
+        
+        <!-- 타입별 파일 조회 -->
+        <select id="selectByType" resultType="Files">
+        	SELECT *
+        	FROM files
+        	WHERE p_table = #{pTable}
+        		AND p_no = #{pNo}
+        		AND type = #{type}
+        </select>
+        
+        <!-- 타입별 파일 목록 -->
+        <select id="listByType" resultType="Files">
+        	SELECT *
+        	FROM files
+        	WHERE p_table = #{pTable}
+        		AND p_no = #{pNo}
+        		AND type = #{type}
+        </select>
+        
 </mapper>

@@ -57,12 +57,32 @@ const UpdateContainer = () => {
           // 필요 시 사용자에게 오류 메시지 표시
         }
       };
-    
 
-  // 게시글 수정 요청 이벤트 헨들러 생성
-  const onUpdate = async (id, title, writer, content) => {
+
+      /*  게시판 기존 수정 로직
+      const onUpdate = async (id, title, writer, content) => { // 파일 기능 구현 후 개선한 코드
+        try {
+          // const response = await boards.update(id, title, writer, content) // 게시글 등록 응답 요청
+          const data = await response.data // 데이터 응답 받기
+          console.log('onUpdate_data: ', data);
+    
+          Swal.alert("수정 완료!")
+    
+          // 게시글 목록으로 이동
+          navigate('/boards')
+    
+        } catch(error) {
+          console.log('onUpdate_error: ', error);
+        }
+      } 
+        */
+
+  // 게시판 + 파일 관련 기능 확장 후 수정 로직
+  // const onUpdate = async (id, title, writer, content) => {   <- 게시판에서 쓰던 코드
+  const onUpdate = async (formData, headers) => { // 파일 기능 구현 후 개선한 코드
     try {
-      const response = await boards.update(id, title, writer, content) // 등록 응답 요청
+      // const response = await boards.update(id, title, writer, content) // 게시글 등록 응답 요청
+      const response = await boards.update(formData, headers) // 게시글 등록 응답 요청
       const data = await response.data // 데이터 응답 받기
       console.log('onUpdate_data: ', data);
 

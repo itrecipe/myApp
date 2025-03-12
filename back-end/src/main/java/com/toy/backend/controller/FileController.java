@@ -223,4 +223,44 @@ public class FileController {
         ServletOutputStream sos = response.getOutputStream();
         FileCopyUtils.copy(fis, sos);
     }
+    
+    /*	URL : /files/{pTable}/{pNo}?type={MAIN, SUB}
+	     @param pTable	: boards
+	     @param pNo		: 1
+	     @param type 	: MAIN, SUB	...
+	     @return
+     */
+    @GetMapping("/{pTable}/{pNo}")
+    public ResponseEntity<?> getAllFile(
+    		@PathVariable("pTable") String pTable,
+    		@PathVariable("pNo") Long pNo,
+    		@RequestParam(value = "type", required = false) String type
+    ) {
+        try {
+        	Files file = new Files();
+        	file.setPTable(pTable);
+        	file.setPNo(pNo);
+        	file.setType(type);
+        	
+        	// type이 없을때 -> 부모 기준 모든 파일 조회
+        	if( type == null ) {
+        		List<Files> list = fileService.listByParent(file);
+        		return new ResponseEntity<>(list, HttpStatus.OK);
+        	}
+        	
+        	// type이 "MAIN"일 경우 -> 메인 파일 1개 조회
+        	if ( type.equals("MAIN") ) {
+        		Files mainFile = fileService.selectByType(file);
+        		return new ResponseEntity<>(mainFile, HttpStatus.OK);
+        	}
+        	// type 그외 타입일 경우 -> 타입별 여러 파일
+        	else {
+        		List<Files> list = fileService.listByType(file);
+        		return new ResponseEntity<>(list, HttpStatus.OK);
+        	}
+        	
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

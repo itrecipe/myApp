@@ -55,3 +55,9 @@ where id in
 ( '80a9f2fa-635d-4196-a551-0b40f3140257',
   '97e18417-145f-433a-9e00-83cc302a14b5'
 );
+
+        SELECT *
+        FROM Files
+        WHERE p_no = no
+	        AND p_table = 'boards'
+	        AND type = 'MAIN';

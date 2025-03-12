@@ -47,59 +47,158 @@ public class BoardServiceImpl implements BoardService {
        }
     */
 
+    /* 게시판 + 파일 관련 기능 등록 처리 (기존)
+	    @Override
+	    @Transactional // 게시글 등록 처리가 되지 않으면 파일 업로드 처리도 되지 않도록 @Transactional을 걸어 준다.
+	    public boolean insert(Boards entity) {
+	    	// 1. 게시글 먼저 등록하기
+	        int result = boardMapper.insert(entity);
+	        
+	        // 2. 파일 업로드 작업
+	        String pTable = "boards";
+	        Long pNo = entity.getNo();
+	           no는 autoincrement로 자동증가 하기 때문에 mybatis로 autoincrement
+	           된 값을 다시 insert(entity) 객체에 넣어주는 옵션이 필요하다.
+	         
+	
+	        List<Files> uploadFileList = new ArrayList<>();
+	
+	        // 메인 파일들을 한번에 담아 가져오기
+	        MultipartFile mainFile = entity.getMainFile();
+	        if( mainFile != null && !mainFile.isEmpty() ) {
+	            Files mainFileInfo = new Files();
+	            mainFileInfo.setPTable(pTable);
+	            mainFileInfo.setPNo(pNo);
+	            mainFileInfo.setData(mainFile);
+	            mainFileInfo.setType("MAIN");
+	            uploadFileList.add(mainFileInfo);
+	        }
+	
+	        List<MultipartFile> files = entity.getFiles();
+	        if( files != null && !files.isEmpty() ) {
+	            for (MultipartFile multipartFile : files) {
+	                if( multipartFile.isEmpty() )
+	                    continue;
+	                Files fileInfo = new Files();
+	                fileInfo.setPTable(pTable);
+	                fileInfo.setPNo(pNo);
+	                fileInfo.setData(multipartFile);
+	                fileInfo.setType("SUB");
+	                uploadFileList.add(fileInfo);
+	            }
+	        }
+	        try {
+	            result += fileService.upload(uploadFileList);
+	        } catch (Exception e) {
+	            log.error("게시글 파일 업로드 중 에러 발생!");
+	            e.printStackTrace();
+	        }
+	        return result > 0;
+	    }
+    */
+	
+    // 게시판 + 파일 관련 기능 확장 후 등록 처리
     @Override
     @Transactional // 게시글 등록 처리가 되지 않으면 파일 업로드 처리도 되지 않도록 @Transactional을 걸어 준다.
     public boolean insert(Boards entity) {
-        int result = boardMapper.insert(entity); // 1. 게시글 먼저 등록하기
-        String pTable = "boards";
-        Long pNo = entity.getNo();
-        /* no는 autoincrement로 자동증가 하기 때문에 mybatis로 autoincrement
+    	// 1. 게시글 먼저 등록하기
+    	int result = boardMapper.insert(entity);
+    	
+    	// 2. 파일 업로드 작업
+    	result += upload(entity);
+    
+    	return result > 0;
+    }
+    
+    /* 파일 업로드
+      @param entity
+      @return
+     */
+    public int upload(Boards entity) {
+    	int result = 0;
+    	
+    	String pTable = "boards";
+    	Long pNo = entity.getNo();
+    	/* no는 autoincrement로 자동증가 하기 때문에 mybatis로 autoincrement
            된 값을 다시 insert(entity) 객체에 넣어주는 옵션이 필요하다.
-         */
-
-        List<Files> uploadFileList = new ArrayList<>();
-
-        // 메인 파일들을 한번에 담아 가져오기
-        MultipartFile mainFile = entity.getMainFile();
-        if( mainFile != null && !mainFile.isEmpty() ) {
-            Files mainFileInfo = new Files();
-            mainFileInfo.setPTable(pTable);
-            mainFileInfo.setPNo(pNo);
-            mainFileInfo.setData(mainFile);
-            mainFileInfo.setType("MAIN");
-            uploadFileList.add(mainFileInfo);
-        }
-
-        List<MultipartFile> files = entity.getFiles();
-        if( files != null && !files.isEmpty() ) {
-            for (MultipartFile multipartFile : files) {
-                if( multipartFile.isEmpty() )
-                    continue;
-                Files fileInfo = new Files();
-                fileInfo.setPTable(pTable);
-                fileInfo.setPNo(pNo);
-                fileInfo.setData(multipartFile);
-                fileInfo.setType("SUB");
-                uploadFileList.add(fileInfo);
-            }
-        }
-        try {
-            result += fileService.upload(uploadFileList);
-        } catch (Exception e) {
-            log.error("게시글 파일 업로드 중 에러 발생!");
-            e.printStackTrace();
-        }
-        return result > 0;
+    	 */
+    	
+    	List<Files> uploadFileList = new ArrayList<>();
+    	
+    	// 메인 파일들을 한번에 담아 가져오기
+    	MultipartFile mainFile = entity.getMainFile();
+    	if( mainFile != null && !mainFile.isEmpty() ) {
+    		Files mainFileInfo = new Files();
+    		mainFileInfo.setPTable(pTable);
+    		mainFileInfo.setPNo(pNo);
+    		mainFileInfo.setData(mainFile);
+    		mainFileInfo.setType("MAIN");
+    		uploadFileList.add(mainFileInfo);
+    	}
+    	
+    	List<MultipartFile> files = entity.getFiles();
+    	if( files != null && !files.isEmpty() ) {
+    		for (MultipartFile multipartFile : files) {
+    			if( multipartFile.isEmpty() )
+    				continue;
+    			Files fileInfo = new Files();
+    			fileInfo.setPTable(pTable);
+    			fileInfo.setPNo(pNo);
+    			fileInfo.setData(multipartFile);
+    			fileInfo.setType("SUB");
+    			uploadFileList.add(fileInfo);
+    		}
+    	}
+    	try {
+    		result += fileService.upload(uploadFileList);
+    	} catch (Exception e) {
+    		log.error("게시글 파일 업로드 중 에러 발생!");
+    		e.printStackTrace();
+    	}
+    	return result;
     }
 
+    /*	게시판 기본 수정 (기존)
+	    @Override
+	    public boolean update(Boards entity) {
+	        return boardMapper.update(entity) > 0;
+	    }
+    */
+    
+    // 게시판 + 파일 관련 기능 확장 후 수정
     @Override
     public boolean update(Boards entity) {
-        return boardMapper.update(entity) > 0;
+    	// 게시글 수정
+    	int result = boardMapper.update(entity);
+    	
+    	// 파일 업로드 작업
+    	result += upload(entity);
+    	
+    	return result > 0;
     }
 
+    /* 게시판 기본 수정 (updateById - 기존)
+	    @Override
+	    public boolean updateById(Boards entity) {
+	        return boardMapper.updateById(entity) > 0;
+	    }
+	*/
+    
+    // 게시판 + 파일 관련 기능 확장 후 수정 (updateById - 개선)
     @Override
     public boolean updateById(Boards entity) {
-        return boardMapper.updateById(entity) > 0;
+    	
+    	// 게시글 수정
+    	int result = boardMapper.updateById(entity);
+    	
+    	/* 이전 게시글의 id를 확인하여 정보를 조회 
+    	   파일 업로드 작업
+    	*/
+    	Boards oldBoard = boardMapper.selectById(entity.getId());
+    	entity.setNo( oldBoard.getNo() );
+    	result += upload(entity);
+    	
+    	return result > 0;
     }
 
 //    @Override

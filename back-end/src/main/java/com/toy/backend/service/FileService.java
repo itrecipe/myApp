@@ -36,5 +36,11 @@ public interface FileService extends BaseService<Files> {
         컨트롤러에서도 메소드명을 공용으로 사용중이기 때문에 deleteFileList, deleteFileListById 메소드는
         따로 정의하지 않았다는 점을 유의할것.
     */
+    
+    // 타입별 파일 조회
+    public Files selectByType(Files file);
+    
+    // 타입별 파일 목록
+    public List<Files> listByType(Files file);
 
 }
