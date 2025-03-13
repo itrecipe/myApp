@@ -5,6 +5,11 @@ import * as format from "../../utils/format";
 import styles from "./css/BoardListForm.module.css"; // css를 모듈화해서 사용하는 방법
 // import Header from '../../components/Header/Header';
 import noImage from '../../assets/react.svg'
+import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
+import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
+
 
 const BoardList = ({ boardList, pagination }) => {
   console.log("BoardList() -> boardList 값 : ", boardList);
@@ -141,7 +146,7 @@ const [pageList, setPageList] = useState([])
             boardList.length === 0 
             ? 
             <tr>
-              <td colSpan={5}>조회된 데이터가 없어요!</td>
+              <td colSpan={5} align="center">조회된 데이터가 없어요!</td>
             </tr>
              : 
             boardList.map( (board) => {
@@ -210,8 +215,8 @@ const [pageList, setPageList] = useState([])
       */}
 
 
-      {/* 페이지네이션 - Link 태그 방식 */}
-      <div className="pagination">
+      {/* 페이지네이션 - Link 태그 방식 (수정된 코드) */}
+    {/*   <div className="pagination">
         <Link to={`/boards?page=${pagination.first}`} className='btn-page'>처음</Link>
         <Link to={`/boards?page=${pagination.prev}`} className='btn-page'>이전</Link>
         {
@@ -229,7 +234,47 @@ const [pageList, setPageList] = useState([])
           <Link to={`/boards?page=${pagination.last}`} className='btn-page'>마지막</Link>
         )
         }
+      </div> 
+      */}
+
+      {/* 페이지네이션 - Link 태그 방식 */}
+      {
+        ( pagination != null && pagination.total > 0 )
+        &&
+        (
+          <div className="pagination">
+        <Link to={`/boards?page=${pagination.first}`} className='btn-page'>
+          <KeyboardDoubleArrowLeftIcon />
+        </Link>
+        {
+          ( pagination.page <= pagination.first )
+          ||
+        <Link to={`/boards?page=${pagination.prev}`} className='btn-page'>
+          <KeyboardArrowLeftIcon />
+        </Link>
+        }
+        {
+          pageList.map( page => (
+
+            // eslint-disable-next-line react/jsx-key
+            <Link to={`/boards?page=${page}`} className={'btn-page ' + ( page == pagination.page && 'active' ) }>{page}</Link>
+          ))
+        }
+        {
+          (pagination.page >= pagination.last)
+          ||
+          <Link to={`/boards?page=${pagination.next}`} className="btn-page">
+            <KeyboardArrowRightIcon />
+          </Link>
+        }
+
+          <Link to={`/boards?page=${pagination.last}`} className='btn-page'>
+            <KeyboardDoubleArrowRightIcon />
+          </Link>
       </div>
+        )
+      }
+      
     </div>
   );
 };
