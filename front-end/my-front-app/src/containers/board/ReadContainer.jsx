@@ -10,8 +10,8 @@ const ReadContainer = () => {
 
   // state 셋팅
   const [board, setBoard] = useState({}); // 기본값 빈 객체 {}
-  const [fileList, setFileList] = useState([])
-  const [mainFile, setMainFile] = useState()
+  const [fileList, setFileList] = useState([]);
+  const [mainFile, setMainFile] = useState();
 
   // 게시글 데이터 요청 (기존 코드)
   /*   const getBoard = async () => {
@@ -27,17 +27,16 @@ const ReadContainer = () => {
       const response = await boards.select(id);
       console.log("read_response: ", response);
 
-      const data = await response.data;   // data 구조 => Board + fileLIst가 같이 오는 구조
+      const data = await response.data; // data 구조 => Board + fileLIst가 같이 오는 구조
       console.log("read_data: ", data);
 
       setBoard(data.board);
-      
+
       setFileList(data.fileList);
       console.log("data.fileList 확인 : ", data.fileList);
 
-      const no = await data.board.no
-      getMainFile(no) // 메인 파일
-
+      const no = await data.board.no;
+      getMainFile(no); // 메인 파일
     } catch (error) {
       console.error("read_error: ", error);
       // 필요 시 사용자에게 오류 메시지 표시
@@ -54,22 +53,22 @@ const ReadContainer = () => {
       2. 브라우저를 통해 a태그로 등록
       3. a태그의 다운로드 기능으로 요청
      */
-    const url = window.URL.createObjectURL(new Blob( [response.data] ))
+    const url = window.URL.createObjectURL(new Blob([response.data]));
     // <a href="파일(data)" download="파일명.png">  <- 왼쪽 코드는 a태그 형식으로 만들어 주는 과정
-    const link = document.createElement('a')  // a태그 생성
-    link.href = url
-    link.setAttribute('download', fileName)
-    document.body.appendChild(link)
-    link.click()  // 다운로드 기능을 가진 a태그를 클릭
-    document.body.removeChild(link)
-  }
+    const link = document.createElement("a"); // a태그 생성
+    link.href = url;
+    link.setAttribute("download", fileName);
+    document.body.appendChild(link);
+    link.click(); // 다운로드 기능을 가진 a태그를 클릭
+    document.body.removeChild(link);
+  };
 
   // 메인 파일 조회
   const getMainFile = async (no) => {
-    const response = await files.fileByType("boards", no, "MAIN")
-    const file = await response.data
-    setMainFile(file)
-    
+    const response = await files.fileByType("boards", no, "MAIN");
+    const file = await response.data;
+    setMainFile(file);
+
     // console.log(`mainFile : ${response.data}`);
   };
 
@@ -81,13 +80,13 @@ const ReadContainer = () => {
   return (
     <>
       <div>ReadContainer</div>
-      <BoardReadForm 
-            board={board}
-            mainFile={mainFile}
-            fileList={fileList} 
-            onDownload={onDownload}
+      <BoardReadForm
+        board={board}
+        mainFile={mainFile}
+        fileList={fileList}
+        onDownload={onDownload}
       />
-      
+
       {/* TIP : 상단에 useState로 상태를 정의 했다면 컴포넌트를
           출력하는 return문에 props(매개변수)로 전달받아야
           되기 때문에 내려줘야 한다. 

@@ -236,7 +236,7 @@
         	FROM files
         	WHERE p_table = #{pTable}
         		AND p_no = #{pNo}
-        		AND type = #{type}
+        		AND type = CAST(#{type} AS file_type)
         </select>
         
         <!-- 타입별 파일 목록 -->
@@ -245,7 +245,7 @@
         	FROM files
         	WHERE p_table = #{pTable}
         		AND p_no = #{pNo}
-        		AND type = #{type}
+        		AND type = CAST(#{type} AS file_type)
         </select>
         
 </mapper>

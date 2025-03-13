@@ -224,7 +224,8 @@ public class FileController {
         FileCopyUtils.copy(fis, sos);
     }
     
-    /*	URL : /files/{pTable}/{pNo}?type={MAIN, SUB}
+    /*	- 타입별 파일 조회
+     	URL : /files/{pTable}/{pNo}?type={MAIN, SUB}
 	     @param pTable	: boards
 	     @param pNo		: 1
 	     @param type 	: MAIN, SUB	...
@@ -260,6 +261,7 @@ public class FileController {
         	}
         	
         } catch (Exception e) {
+        	e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

@@ -31,7 +31,6 @@ VALUES
 	/* PostgreSQL의 gen_random_uuid() 함수를 사용해 UUID 생성
 	   ::text 캐스팅을 통해 문자열로 저장한다.
 	 */
-	
     (gen_random_uuid()::text, '제목1', '작성자1', '내용1'), 
     (gen_random_uuid()::text, '제목2', '작성자2', '내용2'),
     (gen_random_uuid()::text, '제목3', '작성자3', '내용3'),
@@ -41,7 +40,8 @@ VALUES
     (gen_random_uuid()::text, '제목7', '작성자7', '내용7'),
     (gen_random_uuid()::text, '제목8', '작성자8', '내용8'),
     (gen_random_uuid()::text, '제목9', '작성자9', '내용9'),
-    (gen_random_uuid()::text, '제목10', '작성자10', '내용10');
+    (gen_random_uuid()::text, '제목10', '작성자10', '내용10')
+;
 
 select * from boards;
 

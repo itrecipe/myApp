@@ -15,8 +15,8 @@ const BoardUpdateForm = ({
   fileList,
   onDownload,
   deleteCheckedFiles,
+  mFile,
 }) => {
-
   const { id } = useParams();
 
   // state 선언
@@ -67,29 +67,28 @@ const BoardUpdateForm = ({
        state(id, title, writer, content)를 전달하기
     */
 
-  
-/* 수정(제출) 이벤트 핸들러 - 2 (개선 완료)
+  /* 수정(제출) 이벤트 핸들러 - 2 (개선 완료)
 
-const onSubmit = () => {
-    if (!title || !writer || !content) {
-      Swal.alert("모든 입력란을 채워 주세요!");
-      return; // 위 조건 만족시 return해서 업데이트 진행이 되지 않도록 처리
-    }
-    Swal.confirm(
-      "수정 할까요?",
-      "확인 또는 취소 버튼을 눌러 주세요!",
-      "warning",
-      (result) => {
-        if (result.isConfirmed) {
-          onUpdate(id, title, writer, content);
+    const onSubmit = () => {
+        if (!title || !writer || !content) {
+          Swal.alert("모든 입력란을 채워 주세요!");
+          return; // 위 조건 만족시 return해서 업데이트 진행이 되지 않도록 처리
         }
-      }
-    );
-  };
+        Swal.confirm(
+          "수정 할까요?",
+          "확인 또는 취소 버튼을 눌러 주세요!",
+          "warning",
+          (result) => {
+            if (result.isConfirmed) {
+              onUpdate(id, title, writer, content);
+            }
+          }
+        );
+      };
   */
 
-   // 파일 변경 이벤트 핸들러 추가
-   const changeMainFile = (e) => {
+  // 파일 변경 이벤트 핸들러 추가
+  const changeMainFile = (e) => {
     // files : []  -> 리스트 형식
     setMainFile(e.target.files[0]);
   };
@@ -99,7 +98,7 @@ const onSubmit = () => {
   };
 
   // 파일 관련 수정(제출) 이벤트 핸들러-3
-   const onSubmit = () => {
+  const onSubmit = () => {
     if (!title || !writer || !content) {
       Swal.alert("모든 입력란을 채워 주세요!");
       return; // 위 조건 만족시 return해서 업데이트 진행이 되지 않도록 처리
@@ -111,52 +110,51 @@ const onSubmit = () => {
       (result) => {
         if (result.isConfirmed) {
           // onUpdate(id, title, writer, content);
-           /* Content-Type : application/json 기존 방식에서 
+          /* Content-Type : application/json 기존 방식에서 
                 파일 기능(업로드, 다운로드, 삭제, 조회 등...)
                 연결을 위해 multiform-data 형식으로 변경해야 한다.
           
                 onInsert(title, writer, content);
               */
-          
-              /* 파일 업로드
+
+          /* 파일 업로드
                  application/json 방식 -> multipart/form-data 구조 변경
                */
-              const formData = new FormData();
-              
-              // 게시글 정보 세팅
-              formData.append("id", id);    //
-              formData.append("title", title);
-              formData.append("writer", writer);
-              formData.append("content", content);
-          
-              // 파일 데이터 세팅
-              if ( mainFile ) {
-                formData.append('mainFile', mainFile)
-              }
-              if (files) {
-                // 파일 체크
-                for (let i = 0; i < files.length; i++) {
-                  const file = files[i];
-                  formData.append("files", file);
-                }
-              }
-          
-              // 헤더
-              const headers = {
-                "Content-Type": "multipart/form-data",
-              };
-          
-              if (!title || !writer || !content) {
-                Swal.alert("빈칸 없이 모두 입력 해주세요!");
-                return;
-              }
-              // onUpdate(title, writer, content) -> application/json (기존 게시판에서 쓰던 방식)
-              onUpdate(formData, headers);        // multipart/form-data로 구조변경
+          const formData = new FormData();
+
+          // 게시글 정보 세팅
+          formData.append("id", id); //
+          formData.append("title", title);
+          formData.append("writer", writer);
+          formData.append("content", content);
+
+          // 파일 데이터 세팅
+          if (mainFile) {
+            formData.append("mainFile", mainFile);
+          }
+          if (files) {
+            // 파일 체크
+            for (let i = 0; i < files.length; i++) {
+              const file = files[i];
+              formData.append("files", file);
+            }
+          }
+
+          // 헤더
+          const headers = {
+            "Content-Type": "multipart/form-data",
+          };
+
+          if (!title || !writer || !content) {
+            Swal.alert("빈칸 없이 모두 입력 해주세요!");
+            return;
+          }
+          // onUpdate(title, writer, content) -> application/json (기존 게시판에서 쓰던 방식)
+          onUpdate(formData, headers); // multipart/form-data로 구조변경
         }
       }
     );
   };
-
 
   /* 
     [트러블 슈팅]
@@ -340,6 +338,7 @@ const onSubmit = () => {
       setTitle(board.title);
       setWriter(board.writer);
       setContent(board.content);
+      console.log("useEffect()에 board 값이 있을때 mFile 확인 : ", mFile);
     }
   }, [board]);
 
@@ -388,12 +387,21 @@ const onSubmit = () => {
             ></textarea>
           </td>
         </tr>
-        <tr>
-          <td>메인 파일</td>
-          <td>
-            <input type="file" onChange={changeMainFile} />
-          </td>
-        </tr>
+        {/* mFile(대표파일) 없을 때, 파일 첨부 UI를 출력
+            mFile(대표파일) 있을 때, 파일 첨부 UI를 숨김
+        */}
+        { mFile 
+          ? 
+          <></>
+          : 
+         (
+          <tr>
+            <td>대표 파일</td>
+            <td>
+              <input type="file" onChange={changeMainFile} />
+            </td>
+          </tr>
+        )}
         <tr>
           <td>서브 파일</td>
           <td>
@@ -436,12 +444,13 @@ const onSubmit = () => {
                     checked={fileIdList.includes(file.id)}
                   />
 
-                  {/* 썸네일 이미지 적용 */}
-                  <img
-                    src={`/api/files/img/${file.id}`}
-                    alt={file.originName}
-                    className="file-img"
-                  />
+                  <div className="item-img">
+                    {file.type == "MAIN" && ( <span className="badge">대표 이미지</span> ) }
+                    
+                    {/* 썸네일 이미지 적용 */}
+                    <img src={`/api/files/img/${file.id}`} alt={file.originName} className="file-img" />
+                  </div>
+             
                   <span>
                     {file.originName} ( {format.byteToUnit(file.fileSize)})
                   </span>

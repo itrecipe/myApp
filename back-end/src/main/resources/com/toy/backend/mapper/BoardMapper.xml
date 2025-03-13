@@ -16,7 +16,7 @@
         <result property="createdAt" column="created_at"/>
         <result property="updatedAt" column="updated_at"/>
 
-        <association property="file" column="no" javaType="Files" select="selectMainFile"></association>
+<!--        <association property="file" column="no" javaType="Files" select="selectMainFile"></association>-->
 
     </resultMap>
 
@@ -136,14 +136,35 @@
     </delete>
 
     <!-- 메인 파일 정보 조회 (메인 화면 썸네일 이미지 조회)  -->
-    <select id="selectMainFile" resultType="Files">
-    /* test */
+    
+<!--    
+	[트러블 슈팅]
+	
+	1. 문제 상황: PostgreSQL 에러 "operator does not exist: file_type = character varying",
+				Cause: org.postgresql.util.PSQLException: 
+				오류: 연산자 없음: file_type = character varying 에러 발생
+			
+	2. 원인 분석 : ENUM 타입(file_type) 컬럼과 문자열 비교 시 형변환 필요
+	
+	3. 해결 방법 : 문자열을 ENUM으로 캐스팅
+
+	예시 : AND type = CAST(#{type} AS file_type)
+     	  또는 AND type = #{type}::file_type
+     
+	<select id="selectMainFile" resultType="Files">
+	        SELECT *
+	        FROM Files
+	        WHERE p_no = #{no}
+		        AND p_table = 'boards'
+		        AND type = 'MAIN'
+    	</select>
+-->
+
+<select id="selectMainFile" resultType="Files">
         SELECT *
         FROM Files
         WHERE p_no = #{no}
-	        AND p_no = #{no}
 	        AND p_table = 'boards'
-	        AND type = 'MAIN'
+	        AND type = CAST('MAIN' AS file_type)
     </select>
-
 </mapper>

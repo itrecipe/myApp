@@ -310,7 +310,7 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public PageInfo<Boards> list(int page, int size) {
     	List<Boards> list = boardMapper.list();
-        PageHelper.startPage(page,size);
+        PageHelper.startPage(page, size);
         PageInfo<Boards> pageInfo = new PageInfo<>(list);
         return pageInfo;
     }

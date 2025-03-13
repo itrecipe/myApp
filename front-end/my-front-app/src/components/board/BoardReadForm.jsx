@@ -16,12 +16,13 @@ const BoardReadForm = ({ board, mainFile, fileList, onDownload }) => {
     <div className="container">
       <h1 className="title">게시글 조회</h1>
 
-      <div>
-        {
-          mainFile
-          ?
+    {/* 메인 이미지 */}
+    <div>
+        { 
+          mainFile 
+          ? 
           <img src={`/api/files/img/${mainFile?.id}`} alt={mainFile?.originName} />
-          :
+          : 
           <></>
         }
       </div>
@@ -82,9 +83,12 @@ const BoardReadForm = ({ board, mainFile, fileList, onDownload }) => {
                 fileList.map( (file) => (
                   <div className="flex-box" key={file.id}>
                     <div className="item">
-                      {/* 썸네일 이미지 적용 */}
-                      <img src={`/api/files/img/${file.id}`} alt={file.originName}
-                        className="file-img" />
+                      <div className="item-img">
+                          { file.type == 'MAIN' && <span className='badge'>대표 이미지</span> }
+                          {/* 썸네일 이미지 적용 */}
+                          <img src={`/api/files/img/${file.id}`} alt={file.originName}
+                            className="file-img" />
+                      </div>
                       <span>{file.originName} ( { format.byteToUnit( file.fileSize ) })</span>
                     </div>
                     <div className="item">

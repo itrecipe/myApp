@@ -56,8 +56,9 @@ where id in
   '97e18417-145f-433a-9e00-83cc302a14b5'
 );
 
-        SELECT *
-        FROM Files
-        WHERE p_no = no
-	        AND p_table = 'boards'
-	        AND type = 'MAIN';
+-- 게시판에 있는 파일 타입이 MAIN이면서 부모 테이블인 게시판 테이블에 번호가 5인것을 조회 
+SELECT *
+FROM Files
+	WHERE p_no = 5
+AND p_table = 'boards'
+AND type = 'MAIN';

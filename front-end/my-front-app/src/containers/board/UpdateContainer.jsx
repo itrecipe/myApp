@@ -17,7 +17,7 @@ const UpdateContainer = () => {
   // state 셋팅
   const [board, setBoard] = useState({}) // 기본값 빈 객체 {}
   const [fileList, setFileList] = useState([])
-
+  const [mainFile, setMainFile] = useState();
     
 /* 게시글 데이터 요청 (디버깅 코드 추가) - 이전 게시판 코드
    const getBoard = async () => {
@@ -51,13 +51,15 @@ const UpdateContainer = () => {
           
           setFileList(data.fileList);
           console.log("data.fileList 확인 : ", data.fileList);
+
+          const no = await data.board.no;
+          getMainFile(no); // 메인 파일
     
         } catch (error) {
           console.error("read_error: ", error);
           // 필요 시 사용자에게 오류 메시지 표시
         }
       };
-
 
       /*  게시판 기존 수정 로직
       const onUpdate = async (id, title, writer, content) => { // 파일 기능 구현 후 개선한 코드
@@ -148,6 +150,9 @@ const UpdateContainer = () => {
         const fileList = data.fileList
         setFileList(fileList)
 
+        // 메인 파일 요청
+        getMainFile(board.no); // 메인 파일
+
       } catch (error) {
         console.log("onDeleteFile 에러 로그 확인 : ", error)
       }
@@ -169,11 +174,23 @@ const UpdateContainer = () => {
       const fileList = data.fileList
       setFileList(fileList)
 
+      // 메인 파일 요청
+      getMainFile(board.no); // 메인 파일
+
     } catch (error) {
       console.log('deleteCheckedFiles -> error 로그 확인', error);
     }
-
   }
+
+    // 메인 파일 조회
+    const getMainFile = async (no) => {
+      const response = await files.fileByType("boards", no, "MAIN");
+      const file = await response.data;
+      console.log('UpdateContainer -> getMainFile() -> file 확인 : ', file);
+
+      setMainFile(file);
+      // console.log(`mainFile : ${response.data}`);
+    };
 
 
   useEffect( () => {
@@ -192,6 +209,10 @@ const UpdateContainer = () => {
           onDeleteFile={onDeleteFile}
           onDownload={onDownload}
           deleteCheckedFiles={deleteCheckedFiles}
+          mFile={mainFile}  
+          /* 여기서 변수명을 mFile로 바꾼 이유는
+             ReadContainer에서 중복 되기 때문에 변경
+          */
         />
     </>
   );
