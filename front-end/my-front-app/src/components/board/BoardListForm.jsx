@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import * as format from "../../utils/format";
 // import './css/BoardListForm.css' -> 기존까지 사용했던 일반적인 css 사용 방법
 import styles from "./css/BoardListForm.module.css"; // css를 모듈화해서 사용하는 방법
@@ -10,10 +10,18 @@ import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrow
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 
-
 const BoardList = ({ boardList, pagination }) => {
   console.log("BoardList() -> boardList 값 : ", boardList);
   console.log("BoardList() -> pagination 값 : ", pagination);
+
+  const navigate = useNavigate();
+  const location = useLocation();
+  const query = new URLSearchParams(location.search);
+  const [searchTerm, setSearchTerm] = useState(query.get("keyword") || ""); // URL에서 검색어 유지
+
+  const handleSearch = () => {
+    navigate(`/boards?page=${pagination.page}&size=${pagination.size}&keyword=${searchTerm}`)
+  }
 
   /* boardList 샘플 데이터 생성 
   (서버로부터 받은 데이터가 없을때 테스트용으로 사용)
@@ -56,6 +64,15 @@ const [pageList, setPageList] = useState([])
       <Link to="/boards/insert" className="btn">
         글쓰기
       </Link>
+
+    {/* 검색 입력창 추가 */}
+      <input
+        type="text"
+        placeholder="검색어 입력"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+      <button onClick={handleSearch}>검색</button>
 
       {/* 게시글 목록 */}
       {/* <table border={1} className='table'> */}
@@ -214,67 +231,56 @@ const [pageList, setPageList] = useState([])
       </div> 
       */}
 
+      {/* 페이지네이션 - Link 태그 방식 (사수께서 수정 해주신 코드) */}
+      {/*   <div className="pagination">
+          <Link to={`/boards?page=${pagination.first}`} className='btn-page'>처음</Link>
+          <Link to={`/boards?page=${pagination.prev}`} className='btn-page'>이전</Link>
+          {
+            pageList.map( page => (
 
-      {/* 페이지네이션 - Link 태그 방식 (수정된 코드) */}
-    {/*   <div className="pagination">
-        <Link to={`/boards?page=${pagination.first}`} className='btn-page'>처음</Link>
-        <Link to={`/boards?page=${pagination.prev}`} className='btn-page'>이전</Link>
-        {
-          pageList.map( page => (
-
-            // eslint-disable-next-line react/jsx-key
-            <Link to={`/boards?page=${page}`} className={'btn-page ' + ( page == pagination.page && 'active' ) }>{page}</Link>
-          ))
-        }
-        { pagination.end >= pagination.next && (
-          <Link to={`/boards?page=${pagination.next}`} className="btn-page">다음</Link>
-        )
-        }
-        { pagination.end == pagination.next && (
-          <Link to={`/boards?page=${pagination.last}`} className='btn-page'>마지막</Link>
-        )
-        }
-      </div> 
-      */}
+              // eslint-disable-next-line react/jsx-key
+              <Link to={`/boards?page=${page}`} className={'btn-page ' + ( page == pagination.page && 'active' ) }>{page}</Link>
+            ))
+          }
+          { pagination.end >= pagination.next && (
+            <Link to={`/boards?page=${pagination.next}`} className="btn-page">다음</Link>
+          )
+          }
+          { pagination.end == pagination.next && (
+            <Link to={`/boards?page=${pagination.last}`} className='btn-page'>마지막</Link>
+          )
+          }
+        </div> 
+        */}
 
       {/* 페이지네이션 - Link 태그 방식 */}
-      {
-        ( pagination != null && pagination.total > 0 )
-        &&
-        (
-          <div className="pagination">
-        <Link to={`/boards?page=${pagination.first}`} className='btn-page'>
-          <KeyboardDoubleArrowLeftIcon />
-        </Link>
-        {
-          ( pagination.page <= pagination.first )
-          ||
-        <Link to={`/boards?page=${pagination.prev}`} className='btn-page'>
-          <KeyboardArrowLeftIcon />
-        </Link>
-        }
-        {
-          pageList.map( page => (
 
-            // eslint-disable-next-line react/jsx-key
-            <Link to={`/boards?page=${page}`} className={'btn-page ' + ( page == pagination.page && 'active' ) }>{page}</Link>
-          ))
-        }
-        {
-          (pagination.page >= pagination.last)
-          ||
-          <Link to={`/boards?page=${pagination.next}`} className="btn-page">
-            <KeyboardArrowRightIcon />
+      {/* 페이지네이션 */}
+      {pagination.total > 0 && (
+        <div className="pagination">
+          <Link to={`/boards?page=${pagination.first}&size=${pagination.size}&keyword=${searchTerm}`} className="btn-page">
+            <KeyboardDoubleArrowLeftIcon />
           </Link>
-        }
-
-          <Link to={`/boards?page=${pagination.last}`} className='btn-page'>
+          {pagination.page > pagination.first && (
+            <Link to={`/boards?page=${pagination.prev}&size=${pagination.size}&keyword=${searchTerm}`} className="btn-page">
+              <KeyboardArrowLeftIcon />
+            </Link>
+          )}
+          {Array.from({ length: pagination.end - pagination.start + 1 }, (_, i) => pagination.start + i).map(page => (
+            <Link key={page} to={`/boards?page=${page}&size=${pagination.size}&keyword=${searchTerm}`} className={`btn-page ${page === pagination.page ? 'active' : ''}`}>
+              {page}
+            </Link>
+          ))}
+          {pagination.page < pagination.last && (
+            <Link to={`/boards?page=${pagination.next}&size=${pagination.size}&keyword=${searchTerm}`} className="btn-page">
+              <KeyboardArrowRightIcon />
+            </Link>
+          )}
+          <Link to={`/boards?page=${pagination.last}&size=${pagination.size}&keyword=${searchTerm}`} className="btn-page">
             <KeyboardDoubleArrowRightIcon />
           </Link>
-      </div>
-        )
-      }
-      
+        </div>
+      )}
     </div>
   );
 };

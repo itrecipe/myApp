@@ -5,6 +5,8 @@ import com.github.pagehelper.PageInfo;
 import com.toy.backend.domain.Boards;
 import com.toy.backend.domain.Files;
 import com.toy.backend.mapper.BoardMapper;
+import com.toy.backend.vo.BoardEntity;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -97,6 +99,7 @@ public class BoardServiceImpl implements BoardService {
 	    }
     */
 	
+    
     // 게시판 + 파일 관련 기능 확장 후 등록 처리
     @Override
     @Transactional // 게시글 등록 처리가 되지 않으면 파일 업로드 처리도 되지 않도록 @Transactional을 걸어 준다.
@@ -306,12 +309,47 @@ public class BoardServiceImpl implements BoardService {
         return result;
     }
 
-    // 페이징 (페이지 리스트 출력)
+    // 페이징 (페이지 리스트 출력) - 기존 게시판 코드
+    /*
+	    @Override
+	    public PageInfo<Boards> list(int page, int size) {
+	    	List<Boards> list = boardMapper.list();
+	        PageHelper.startPage(page, size);
+	        PageInfo<Boards> pageInfo = new PageInfo<>(list);
+	        return pageInfo;
+	    }
+    */
+    
+    // 검색 처리
     @Override
-    public PageInfo<Boards> list(int page, int size) {
-    	List<Boards> list = boardMapper.list();
-        PageHelper.startPage(page, size);
-        PageInfo<Boards> pageInfo = new PageInfo<>(list);
-        return pageInfo;
+    public PageInfo<Boards> list(int page, int size, String searchType, String keyword) {
+    	
+        
+    	// 페이지 네이션 적용 
+    	PageHelper.startPage(page, size);
+    	
+    	// 검색 조건에 맞는 게시글 조회
+    	List<Boards> boardList = boardMapper.search(searchType, keyword);
+    	
+    	// 조회 결과를 PageInfo로 변환하여 반환
+    	
+        return new PageInfo<>(boardList);
     }
+
+    /*
+		@Override
+		public PageInfo<Boards> list(BoardEntity boardVO) {
+	
+	    	// 페이지 네이션 적용 
+	    	PageHelper.startPage(boardVO.getPage(), boardVO.getSize());
+	    	
+	    	// 검색 조건에 맞는 게시글 조회
+	    	List<Boards> boardList = boardMapper.search(searchType, keyword);
+	    	
+	    	// 조회 결과를 PageInfo로 변환하여 반환
+	    	
+	        return new PageInfo<>(boardList);
+	
+		}
+	*/
 }

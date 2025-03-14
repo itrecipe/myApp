@@ -1,21 +1,36 @@
 package com.toy.backend.controller;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.PageInfo;
 import com.toy.backend.domain.Boards;
 import com.toy.backend.domain.Files;
 import com.toy.backend.domain.Pagination;
 import com.toy.backend.service.BoardService;
 import com.toy.backend.service.FileService;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import com.toy.backend.vo.BoardEntity;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @CrossOrigin("*") // *은 전체 경로 지정을 의미
@@ -27,20 +42,31 @@ public class BoardController {
     @Autowired FileService fileService;
 
     @GetMapping()
-    public ResponseEntity<?> getAllBoard(
-            @RequestParam(value = "page", required = false, defaultValue = "1") int page,
-            @RequestParam(value = "size", required = false, defaultValue = "10") int size
+    
+//    public ResponseEntity<?> getAllBoard(BoardEntity boardVO
+    		
+            public ResponseEntity<?> getAllBoard(
+//            		//,@RequestParam(value = "password2", required = true) int password2
+            		@RequestParam(value = "size", required = false, defaultValue = "10") int size,
+            		@RequestParam(value = "searchType", required = false) String searchType,
+            		@RequestParam(value = "keyword", required = false) String keyword
+            
     ) {
         try {
             // List<Boards> boardList = boardService.list(); 기존엔 전체 조회기능 테스트를 위해 List 타입으로 넘겼음
 
-            PageInfo<Boards> pageInfo = boardService.list(page, size);
+//        	 PageInfo<Boards> pageInfo = boardService.list(page, size);
+            PageInfo<Boards> pageInfo = boardService.list(page, size, searchType, keyword);
+//            PageInfo<Boards> pageInfo = boardService.list(boardVO.getPage(), boardVO.getSize(), boardVO.getSearchType(), boardVO.getKeyword());
+//            PageInfo<Boards> pageInfo = boardService.list(boardVO);
+            
             // 페이지 네이션 객체 생성
             Pagination pagination = new Pagination();
             // setter로 페이지, 사이즈, 페이지 정보의 총 갯수 셋팅
-            pagination.setPage(page);
-            pagination.setSize(size);
+            pagination.setPage(boardVO.getPage());
+            pagination.setSize(boardVO.getSize());
             pagination.setTotal(pageInfo.getTotal());
+            
             // 응답 받기
             Map<String, Object> response = new HashMap<String, Object>();
             // 받은 응답 꺼내오기
@@ -127,19 +153,38 @@ public class BoardController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-    @PostMapping(value="", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> createBoardJSON(@RequestBody Boards board) {
+    @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> createBoardJSON(HttpServletRequest req) {
         log.info("게시글 등록 - application/json");
+
         try {
+            // 1. 요청 바디(JSON) 읽어오기
+            StringBuilder jsonBody = new StringBuilder();
+            String line;
+            BufferedReader reader = req.getReader();
+            while ((line = reader.readLine()) != null) {
+                jsonBody.append(line);
+            }
+            log.info("받은 JSON 데이터: " + jsonBody.toString());
+
+            // 2. JSON 문자열을 Boards 객체로 변환
+            ObjectMapper mapper = new ObjectMapper();
+            Boards board = mapper.readValue(jsonBody.toString(), Boards.class);
+            log.info("매핑된 Boards 객체: " + board.toString());
+
+            // 3. 데이터 저장
             boolean result = boardService.insert(board);
-            if( result ) {
+            if (result) {
                 return new ResponseEntity<>("SUCCESS", HttpStatus.CREATED);
             } else {
                 return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
             }
+
+        } catch (IOException e) {
+            log.error("JSON 변환 실패: ", e);
+            return new ResponseEntity<>("JSON 파싱 오류", HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-        	e.printStackTrace();
+            log.error("게시글 등록 중 오류 발생: ", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
