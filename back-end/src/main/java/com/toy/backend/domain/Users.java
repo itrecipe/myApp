@@ -8,6 +8,7 @@ import java.util.UUID;
 
 @Data
 public class Users {
+	
     private Long no;
     private String id;
     private String username;

@@ -5,7 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.toy.backend.domain.Boards;
 import com.toy.backend.domain.Files;
 import com.toy.backend.mapper.BoardMapper;
-import com.toy.backend.vo.BoardEntity;
+// import com.toy.backend.vo.BoardEntity;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -320,11 +320,10 @@ public class BoardServiceImpl implements BoardService {
 	    }
     */
     
-    // 검색 처리
+    // 검색 처리 적용
     @Override
     public PageInfo<Boards> list(int page, int size, String searchType, String keyword) {
     	
-        
     	// 페이지 네이션 적용 
     	PageHelper.startPage(page, size);
     	

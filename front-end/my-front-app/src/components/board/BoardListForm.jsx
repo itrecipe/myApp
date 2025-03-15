@@ -255,7 +255,7 @@ const [pageList, setPageList] = useState([])
 
       {/* 페이지네이션 - Link 태그 방식 */}
 
-      {/* 페이지네이션 */}
+      {/* 페이지네이션 - 검색 처리 적용*/}
       {pagination.total > 0 && (
         <div className="pagination">
           <Link to={`/boards?page=${pagination.first}&size=${pagination.size}&keyword=${searchTerm}`} className="btn-page">

@@ -71,9 +71,8 @@ const BoardInsertForm = ({ onInsert }) => {
       파일 기능(업로드, 다운로드, 삭제, 조회 등...)
       연결을 위해 multiform-data 형식으로 변경해야 한다.
 
+      onInsert(title, writer, content);
       */
-   onInsert(title, writer, content);
-   return;
 
     /* 파일 업로드
        application/json 방식 -> multipart/form-data 구조 변경

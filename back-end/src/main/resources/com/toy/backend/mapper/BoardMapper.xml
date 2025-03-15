@@ -16,7 +16,7 @@
         <result property="createdAt" column="created_at"/>
         <result property="updatedAt" column="updated_at"/>
 
-<!--        <association property="file" column="no" javaType="Files" select="selectMainFile"></association>-->
+        <association property="file" column="no" javaType="Files" select="selectMainFile"></association>
 
     </resultMap>
 
@@ -31,7 +31,6 @@
     -->
 
     <!--
-
 
         [트러블 슈팅]
         * 문제 상황 : boardMap 클래스를 찾을 수 없음
