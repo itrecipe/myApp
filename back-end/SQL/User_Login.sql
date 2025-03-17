@@ -41,3 +41,4 @@ COMMENT ON COLUMN user_auth.no IS 'PK';
 COMMENT ON COLUMN user_auth.username IS '아이디';
 COMMENT ON COLUMN user_auth.auth IS '권한';
 
+
